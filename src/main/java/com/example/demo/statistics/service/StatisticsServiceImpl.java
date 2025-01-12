@@ -1,46 +1,42 @@
 package com.example.demo.statistics.service;
 
 
-import com.example.urlshortener.statistics.dto.UrlStatisticsResponseDTO;
-import com.example.urlshortener.statistics.dto.UserStatisticsResponseDTO;
-import com.example.urlshortener.statistics.repository.UrlStatisticsRepository;
-import com.example.urlshortener.user.service.UserService; // Сервіс для роботи з користувачами
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-@RequiredArgsConstructor
 public class StatisticsServiceImpl implements StatisticsService {
 
-    private final UrlStatisticsRepository urlStatisticsRepository;
-    private final UserService userService; // Для отримання авторизованого користувача
+    private final UrlService urlService;
 
-    @Override
-    public UrlStatisticsResponseDTO getStatisticsByShortUrl(String shortUrl) {
-        var statistics = urlStatisticsRepository.findByShortUrl(shortUrl)
-                .orElseThrow(() -> new RuntimeException("Statistics not found for URL: " + shortUrl));
-
-        return UrlStatisticsResponseDTO.builder()
-                .shortUrl(statistics.getShortUrl())
-                .originalUrl(statistics.getOriginalUrl())
-                .clickCount(statistics.getClickCount())
-                .createdAt(statistics.getCreatedAt())
-                .build();
+    public StatisticsServiceImpl(UrlService urlService) {
+        this.urlService = urlService;
     }
 
     @Override
-    public List<UserStatisticsResponseDTO> getStatisticsForUser() {
-        var currentUser = userService.getCurrentUser(); // Метод для отримання авторизованого користувача
+    public UrlStatisticsResponseDTO getStatisticsByShortUrl(String shortUrl) {
+        var url = urlService.getUrlByShortCode(shortUrl); // Метод з UrlService
+        if (url == null) {
+            throw new RuntimeException("URL not found for short code: " + shortUrl);
+        }
 
-        return urlStatisticsRepository.findAllByUserId(currentUser.getId())
-                .stream()
-                .map(stat -> UserStatisticsResponseDTO.builder()
-                        .shortUrl(stat.getShortUrl())
-                        .clickCount(stat.getClickCount())
-                        .build())
-                .collect(Collectors.toList());
+        return new UrlStatisticsResponseDTO(
+                url.getShortUrl(),
+                url.getOriginalUrl(),
+                url.getClickCount(),
+                url.getCreatedAt()
+        );
+    }
+
+    @Override
+    public List<UrlStatisticsResponseDTO> getStatisticsForUser() {
+        var currentUser = ... // Отримати поточного користувача через UserService
+        var urls = urlService.getUrlsByUserId(currentUser.getId());
+
+        return urls.stream()
+                .map(url -> new UrlStatisticsResponseDTO(
+                        url.getShortUrl(),
+                        url.getOriginalUrl(),
+                        url.getClickCount(),
+                        url.getCreatedAt()
+                ))
+                .toList();
     }
 }
