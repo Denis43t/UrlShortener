@@ -17,7 +17,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserValidator validator;
-    private final UserMessageUtil messageUtil;
+    private final UserMessageProvider messageProvider;
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
 
@@ -26,19 +26,19 @@ public class UserService {
         String username = request.getUsername();
 
         if (!userRepository.existsByUsername(username)) {
-            return RegisterUserResponse.failed(messageUtil.generateUserExistsMessage(username),
+            return RegisterUserResponse.failed(messageProvider.generateUserExistsMessage(username),
                     HttpStatus.CONFLICT);
         }
 
         if (!validator.isValidUsernameFormat(username)) {
-            return RegisterUserResponse.failed(UserMessageUtil.USERNAME_FORMAT_MESSAGE,
+            return RegisterUserResponse.failed(UserMessageProvider.USERNAME_FORMAT_MESSAGE,
                     HttpStatus.BAD_REQUEST);
         }
 
         String password = request.getPassword();
 
         if (!validator.isValidPasswordFormat(password)) {
-            return RegisterUserResponse.failed(UserMessageUtil.PASSWORD_COMPLEXITY_MESSAGE,
+            return RegisterUserResponse.failed(UserMessageProvider.PASSWORD_COMPLEXITY_MESSAGE,
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -57,13 +57,13 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
-            return AuthUserResponse.failed(messageUtil.generateUserNotFoundMessage(username));
+            return AuthUserResponse.failed(messageProvider.generateUserNotFoundMessage(username));
         }
 
         User user = userOptional.get();
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            return AuthUserResponse.failed(UserMessageUtil.INVALID_PASSWORD_MESSAGE);
+            return AuthUserResponse.failed(UserMessageProvider.INVALID_PASSWORD_MESSAGE);
         }
 
         String token = authService.generateToken(username);

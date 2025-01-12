@@ -3,7 +3,7 @@ package com.example.demo.user;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserMessageUtil {
+public class UserMessageProvider {
     public static final String USERNAME_FORMAT_MESSAGE =
             "Username must be at least 5 and no more than 50 characters";
 
