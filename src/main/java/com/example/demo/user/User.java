@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(schema = "usr_shortener", name = "user")
+@Table(schema = "url_shortener", name = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

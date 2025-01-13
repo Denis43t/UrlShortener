@@ -11,14 +11,13 @@ public class AuthUserResponse {
     private String token;
     private String message;
 
+    @JsonIgnore
+    private HttpStatus status;
+
     public AuthUserResponse(String message, HttpStatus status) {
         this.message = message;
         this.status = status;
     }
-
-    @JsonIgnore
-    private HttpStatus status;
-
 
     public static AuthUserResponse success(String token) {
         return new AuthUserResponse(token, "User successfully authenticated", HttpStatus.OK);

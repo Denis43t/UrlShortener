@@ -25,7 +25,7 @@ public class UserService {
     public RegisterUserResponse registerUser(UserRequest request) {
         String username = request.getUsername();
 
-        if (!userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsername(username)) {
             return RegisterUserResponse.failed(messageProvider.generateUserExistsMessage(username),
                     HttpStatus.CONFLICT);
         }
@@ -69,5 +69,4 @@ public class UserService {
         String token = authService.generateToken(username);
         return AuthUserResponse.success(token);
     }
-
 }

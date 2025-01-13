@@ -14,7 +14,7 @@ public class UserMessageProvider {
     public static final String INVALID_PASSWORD_MESSAGE = "Invalid password. Please try again.";
 
     public String generateUserExistsMessage(String username) {
-        return "User with name + " + username + " already exists. Please try a different name.";
+        return "User with name " + username + " already exists. Please try a different name.";
     }
 
     public String generateUserNotFoundMessage(String username) {
