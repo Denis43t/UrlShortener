@@ -15,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
 
-    @PutMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<RegisterUserResponse> registerUser(@RequestBody UserRequest request) {
         RegisterUserResponse response = userService.registerUser(request);
         return ResponseEntity.status(response.getStatus()).body(response);
