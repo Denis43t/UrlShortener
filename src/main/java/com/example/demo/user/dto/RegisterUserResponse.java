@@ -22,7 +22,7 @@ public class RegisterUserResponse {
     }
 
     public static RegisterUserResponse success(Long id, String username) {
-        return new RegisterUserResponse(id, username, "User successfully registered", HttpStatus.CREATED);
+        return new RegisterUserResponse(id, username, "User successfully registered.", HttpStatus.CREATED);
     }
 
     public static RegisterUserResponse failed(String message, HttpStatus status) {

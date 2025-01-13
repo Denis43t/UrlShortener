@@ -20,7 +20,7 @@ public class AuthUserResponse {
     }
 
     public static AuthUserResponse success(String token) {
-        return new AuthUserResponse(token, "User successfully authenticated", HttpStatus.OK);
+        return new AuthUserResponse(token, "User successfully authenticated.", HttpStatus.OK);
     }
 
     public static AuthUserResponse failed(String message) {
