@@ -5,14 +5,12 @@ import com.example.demo.user.dto.AuthUserResponse;
 import com.example.demo.user.dto.RegisterUserResponse;
 import com.example.demo.user.dto.UserRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth/")
 @RequiredArgsConstructor
-@Slf4j
 public class UserController {
     private final UserService userService;
 
