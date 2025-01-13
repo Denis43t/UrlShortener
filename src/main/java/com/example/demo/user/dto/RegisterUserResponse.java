@@ -18,6 +18,7 @@ public class RegisterUserResponse {
 
     public RegisterUserResponse(String message, HttpStatus status) {
         this.message = message;
+        this.status = status;
     }
 
     public static RegisterUserResponse success(Long id, String username) {

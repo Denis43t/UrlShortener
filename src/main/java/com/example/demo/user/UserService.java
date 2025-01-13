@@ -69,5 +69,4 @@ public class UserService {
         String token = authService.generateToken(username);
         return AuthUserResponse.success(token);
     }
-
 }
