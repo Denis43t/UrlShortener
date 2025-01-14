@@ -25,4 +25,4 @@ jobs:
         run: chmod +x mvnw
 
       - name: Run tests with Maven
-        run: ./mvn clean test
+        run: mvn clean test --batch-mode --update-snapshots verify
