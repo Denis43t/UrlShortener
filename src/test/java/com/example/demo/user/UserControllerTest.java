@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class UserControllerTest {
 
     // Mocked dependencies for the UserService and UserController
-    private final UserService userService = Mockito.mock(UserService.class);
+    private final UserServiceImpl userService = Mockito.mock(UserServiceImpl.class);
     private final UserController userController = new UserController(userService);
 
     /**

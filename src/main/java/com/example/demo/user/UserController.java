@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Rest controller for handling user authentication and registration requests.
  * This controller exposes endpoints for registering and authenticating users.
- * It communicates with the {@link UserService} to perform the business logic.
+ * It communicates with the {@link UserServiceImpl} to perform the business logic.
  *
  * <p> The controller provides two main endpoints:
  * <ul>
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth/")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     /**
      * Endpoint to handle user registration.

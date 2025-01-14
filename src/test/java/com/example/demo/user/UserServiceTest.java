@@ -1,6 +1,6 @@
 package com.example.demo.user;
 
-import com.example.demo.security.AuthService;
+import com.example.demo.security.TokenProvider;
 import com.example.demo.user.dto.AuthUserResponse;
 import com.example.demo.user.dto.RegisterUserResponse;
 import com.example.demo.user.dto.UserRequest;
@@ -38,10 +38,10 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private AuthService authService;
+    private TokenProvider authService;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     /**
      * Tests the successful registration of a user.
