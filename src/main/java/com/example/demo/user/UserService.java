@@ -1,6 +1,5 @@
 package com.example.demo.user;
 
-
 import com.example.demo.security.AuthService;
 import com.example.demo.user.dto.AuthUserResponse;
 import com.example.demo.user.dto.RegisterUserResponse;
@@ -9,24 +8,40 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * Service class responsible for handling user-related operations such as registration and authentication.
+ *
+ * This service interacts with the {@link UserRepository} to perform CRUD operations on the `User` entity.
+ * It also validates user input using the {@link UserValidator} and utilizes the {@link AuthService} for token generation.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final UserValidator validator;
-    private final UserMessageProvider messageProvider;
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
 
-
+    /**
+     * Registers a new user using the provided {@link UserRequest}.
+     *
+     * <p> Checks if the username already exists, validates the username and password formats,
+     * hashes the password, and finally saves the user in the database.
+     *
+     * @param request The {@link UserRequest} containing the username and password.
+     * @return A {@link RegisterUserResponse} indicating the success or failure of the registration.
+     */
+    @Transactional
     public RegisterUserResponse registerUser(UserRequest request) {
         String username = request.getUsername();
 
         if (userRepository.existsByUsername(username)) {
-            return RegisterUserResponse.failed(messageProvider.generateUserExistsMessage(username),
+            return RegisterUserResponse.failed(UserMessageProvider.generateUserExistsMessage(username),
                     HttpStatus.CONFLICT);
         }
 
@@ -49,7 +64,15 @@ public class UserService {
         return RegisterUserResponse.success(user.getId(), username);
     }
 
-
+    /**
+     * Authenticates a user using the provided {@link UserRequest}.
+     *
+     * <p> Checks if the username exists in the database, verifies the password using the {@link PasswordEncoder},
+     * and generates an authentication token using the {@link AuthService}.
+     *
+     * @param request The {@link UserRequest} containing the username and password.
+     * @return An {@link AuthUserResponse} indicating the success or failure of authentication.
+     */
     public AuthUserResponse authenticateUser(UserRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();
@@ -57,7 +80,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
-            return AuthUserResponse.failed(messageProvider.generateUserNotFoundMessage(username));
+            return AuthUserResponse.failed(UserMessageProvider.generateUserNotFoundMessage(username));
         }
 
         User user = userOptional.get();
