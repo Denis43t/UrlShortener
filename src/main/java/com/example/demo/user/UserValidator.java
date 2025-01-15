@@ -1,8 +1,11 @@
 package com.example.demo.user;
 
+import com.example.demo.user.dto.UserResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Validator class responsible for validating user-related input such as usernames and passwords.
@@ -18,6 +21,33 @@ public class UserValidator {
     private static final int MIN_PASSWORD_LENGTH = 8;
 
     /**
+     * Validates the username and password format.
+     *
+     * @param username The username to validate.
+     * @param password The password to validate.
+     * @return An `Optional` with the `ResponseEntity` if validation fails, or empty if successful.
+     */
+    public Optional<UserResponse> validateUser(String username, String password) {
+        if (!isValidUsernameFormat(username)) {
+            return Optional.ofNullable(UserResponse.builder()
+                    .message(UserMessageProvider.USERNAME_FORMAT_MESSAGE)
+                    .status(HttpStatus.BAD_REQUEST).build());
+        }
+
+        if (!isValidPasswordFormat(password)) {
+            return Optional.ofNullable(UserResponse.builder()
+                    .message(UserMessageProvider.PASSWORD_COMPLEXITY_MESSAGE)
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build());
+        }
+
+        return Optional.empty();
+    }
+
+
+
+
+    /**
      * Checks if the provided username meets the required format.
      *
      * <p> Validates that the username length is between {@value MIN_USERNAME_LENGTH} and {@value MAX_USERNAME_LENGTH}.
@@ -25,7 +55,7 @@ public class UserValidator {
      * @param username The username to be validated.
      * @return {@code true} if the username format is valid, otherwise {@code false}.
      */
-    public boolean isValidUsernameFormat(String username) {
+    private boolean isValidUsernameFormat(String username) {
         return username.length() >= MIN_USERNAME_LENGTH && username.length() <= MAX_USERNAME_LENGTH;
     }
 
@@ -38,7 +68,7 @@ public class UserValidator {
      * @param password The password to be validated.
      * @return {@code true} if the password format is valid, otherwise {@code false}.
      */
-    public boolean isValidPasswordFormat(String password) {
+    private boolean isValidPasswordFormat(String password) {
         if (Objects.isNull(password) || password.length() < MIN_PASSWORD_LENGTH) {
             return false;
         }

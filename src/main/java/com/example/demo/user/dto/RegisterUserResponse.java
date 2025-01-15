@@ -1,8 +1,9 @@
 package com.example.demo.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,14 +11,15 @@ import org.springframework.http.HttpStatus;
  * It contains the user ID, username, a message describing the outcome,
  * and the HTTP status of the response.
  *
- * <p> The class is annotated with {@link lombok.AllArgsConstructor} and {@link lombok.Data}
+ * <p> The class is annotated with {@link lombok.Data} and {@link lombok.EqualsAndHashCode}
  * to generate the required constructors, getters, setters, equals, hashCode, and toString methods automatically. </p>
  *
  * <p> The {@link JsonIgnore} annotation is used to ignore the `status` field during JSON serialization. </p>
  */
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class RegisterUserResponse {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class RegisterUserResponse extends UserResponse {
 
     /**
      * The ID of the registered user.
@@ -29,21 +31,15 @@ public class RegisterUserResponse {
      */
     private String username;
 
-    /**
-     * A descriptive message about the registration result.
-     */
-    private String message;
-
-    /**
-     * The HTTP status of the registration response.
-     * This field is ignored during JSON serialization using {@link JsonIgnore}.
-     */
-    @JsonIgnore
-    private HttpStatus status;
 
     public RegisterUserResponse(String message, HttpStatus status) {
-        this.message = message;
-        this.status = status;
+        super(message, status);
+    }
+
+    public RegisterUserResponse(Long userId, String username, String message, HttpStatus status) {
+        super(message, status);
+        this.userId = userId;
+        this.username = username;
     }
 
     /**

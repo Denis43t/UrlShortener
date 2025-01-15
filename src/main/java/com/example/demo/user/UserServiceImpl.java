@@ -4,6 +4,7 @@ import com.example.demo.security.TokenProvider;
 import com.example.demo.user.dto.AuthUserResponse;
 import com.example.demo.user.dto.RegisterUserResponse;
 import com.example.demo.user.dto.UserRequest;
+import com.example.demo.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,23 +41,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public RegisterUserResponse registerUser(UserRequest request) {
         String username = request.getUsername();
+        String password = request.getPassword();
+
+        Optional<UserResponse> validOptional = validator.validateUser(username, password);
+
+        if (validOptional.isPresent()) {
+            UserResponse response = validOptional.get();
+            return RegisterUserResponse.failed(response.getMessage(), response.getStatus());
+        }
+
 
         if (userRepository.existsByUsername(username)) {
             return RegisterUserResponse.failed(UserMessageProvider.generateUserExistsMessage(username),
                     HttpStatus.CONFLICT);
         }
 
-        if (!validator.isValidUsernameFormat(username)) {
-            return RegisterUserResponse.failed(UserMessageProvider.USERNAME_FORMAT_MESSAGE,
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        String password = request.getPassword();
-
-        if (!validator.isValidPasswordFormat(password)) {
-            return RegisterUserResponse.failed(UserMessageProvider.PASSWORD_COMPLEXITY_MESSAGE,
-                    HttpStatus.BAD_REQUEST);
-        }
 
         String hashedPassword = passwordEncoder.encode(password);
 
@@ -79,6 +78,13 @@ public class UserServiceImpl implements UserService {
         String username = request.getUsername();
         String password = request.getPassword();
 
+        Optional<UserResponse> validOptional = validator.validateUser(username, password);
+
+        if (validOptional.isPresent()) {
+            UserResponse response = validOptional.get();
+            return AuthUserResponse.failed(response.getMessage());
+        }
+
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
@@ -94,4 +100,7 @@ public class UserServiceImpl implements UserService {
         String token = tokenProvider.generateToken(username);
         return AuthUserResponse.success(token);
     }
+
+
+
 }

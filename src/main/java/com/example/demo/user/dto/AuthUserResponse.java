@@ -1,8 +1,10 @@
 package com.example.demo.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,35 +12,28 @@ import org.springframework.http.HttpStatus;
  * It contains the authentication token, a message describing the outcome,
  * and the HTTP status of the response.
  *
- * <p> The class is annotated with {@link lombok.AllArgsConstructor} and {@link lombok.Data}
- * to generate the required constructors, getters, setters, equals, hashCode, and toString methods automatically. </p>
- *
+ * The class is annotated with {@link lombok.Data} and {@link lombok.EqualsAndHashCode}
+ *  * to generate the required constructors, getters, setters, equals, hashCode, and toString methods automatically. </p>
  * <p> The {@link JsonIgnore} annotation is used to ignore the `status` field during JSON serialization. </p>
  */
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class AuthUserResponse {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AuthUserResponse extends UserResponse {
 
     /**
      * The token that is returned upon successful authentication.
      */
     private String token;
 
-    /**
-     * A descriptive message about the authentication result.
-     */
-    private String message;
-
-    /**
-     * The HTTP status of the authentication response.
-     * This field is ignored during JSON serialization using {@link JsonIgnore}.
-     */
-    @JsonIgnore
-    private HttpStatus status;
 
     public AuthUserResponse(String message, HttpStatus status) {
-        this.message = message;
-        this.status = status;
+        super(message, status);
+    }
+
+    public AuthUserResponse(String token, String message, HttpStatus status) {
+        super(message, status);
+        this.token = token;
     }
 
     /**

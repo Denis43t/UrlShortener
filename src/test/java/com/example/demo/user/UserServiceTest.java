@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for the UserService class.
- *
+ * <p>
  * This class contains test cases to verify the behavior of the UserService,
  * including user registration and authentication functionalities.
  * The tests use Mocking for dependencies such as UserRepository, UserValidator, PasswordEncoder,
@@ -52,15 +52,14 @@ class UserServiceTest {
      */
     @Test
     void testRegisterUser_Success() {
-        UserRequest request = new UserRequest("validUsername", "ValidPassword123!");
-        when(userRepository.existsByUsername("validUsername")).thenReturn(false);
-        when(validator.isValidUsernameFormat("validUsername")).thenReturn(true);
-        when(validator.isValidPasswordFormat("ValidPassword123!")).thenReturn(true);
-        when(passwordEncoder.encode("ValidPassword123!")).thenReturn("hashedPassword");
+        String username = "validUserName";
+        String password = "validPassword123!";
+        UserRequest request = new UserRequest(username, password);
+        when(passwordEncoder.encode(password)).thenReturn("hashedPassword");
 
         User savedUser = User.builder()
                 .id(1L)
-                .username("validUsername")
+                .username(username)
                 .password("hashedPassword")
                 .build();
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -68,7 +67,7 @@ class UserServiceTest {
 
         assertNotNull(response);
         assertEquals(1L, response.getUserId());
-        assertEquals("validUsername", response.getUsername());
+        assertEquals(username, response.getUsername());
         assertEquals(HttpStatus.CREATED, response.getStatus());
         assertEquals("User successfully registered.", response.getMessage());
 
@@ -83,9 +82,11 @@ class UserServiceTest {
      */
     @Test
     void testRegisterUser_UsernameExists() {
-        UserRequest request = new UserRequest("existingUsername", "ValidPassword123!");
+        String username = "validUserName";
+        String password = "validPassword123!";
+        UserRequest request = new UserRequest(username, password);
 
-        when(userRepository.existsByUsername("existingUsername")).thenReturn(true);
+        when(userRepository.existsByUsername(username)).thenReturn(true);
 
         RegisterUserResponse response = userService.registerUser(request);
 
@@ -104,16 +105,19 @@ class UserServiceTest {
      */
     @Test
     void testAuthenticateUser_Success() {
-        UserRequest request = new UserRequest("validUsername", "ValidPassword123!");
+        String username = "validUserName";
+        String password = "validPassword123!";
+        String hashedPassword = "hashedPassword";
+        UserRequest request = new UserRequest(username, password);
         User user = User.builder()
                 .id(1L)
-                .username("validUsername")
-                .password("hashedPassword")
+                .username(username)
+                .password(hashedPassword)
                 .build();
 
-        when(userRepository.findByUsername("validUsername")).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("ValidPassword123!", "hashedPassword")).thenReturn(true);
-        when(authService.generateToken("validUsername")).thenReturn("generatedToken");
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
+        when(authService.generateToken(username)).thenReturn("generatedToken");
 
         AuthUserResponse response = userService.authenticateUser(request);
 
@@ -131,14 +135,17 @@ class UserServiceTest {
      */
     @Test
     void testAuthenticateUser_UserNotFound() {
-        UserRequest request = new UserRequest("nonExistentUser", "Password123!");
-        when(userRepository.findByUsername("nonExistentUser")).thenReturn(Optional.empty());
+        String nonExistentUsername = "nonExistentUser";
+        String password = "Password123!";
+        UserRequest request = new UserRequest(nonExistentUsername, password);
+        when(userRepository.findByUsername(nonExistentUsername)).thenReturn(Optional.empty());
 
         AuthUserResponse response = userService.authenticateUser(request);
 
         assertNotNull(response);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatus());
-        assertEquals("User is not authenticated. User with name " + request.getUsername() + " not found.", response.getMessage());
+        assertEquals("User is not authenticated. User with name " + request.getUsername() + " not found.",
+                response.getMessage());
     }
 
     /**
@@ -149,15 +156,19 @@ class UserServiceTest {
      */
     @Test
     void testAuthenticateUser_InvalidPassword() {
-        UserRequest request = new UserRequest("validUsername", "WrongPassword123!");
+        String username = "validUserName";
+        String password = "WrongPassword123!";
+        String hashedPassword = "hashedPassword";
+
+        UserRequest request = new UserRequest(username, password);
         User user = User.builder()
                 .id(1L)
-                .username("validUsername")
-                .password("hashedPassword")
+                .username(username)
+                .password(hashedPassword)
                 .build();
 
-        when(userRepository.findByUsername("validUsername")).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("WrongPassword123!", "hashedPassword")).thenReturn(false);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(password, hashedPassword)).thenReturn(false);
 
         AuthUserResponse response = userService.authenticateUser(request);
 

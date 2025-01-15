@@ -4,6 +4,7 @@ package com.example.demo;
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Configuration class for setting up an embedded PostgreSQL database for testing.
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * the database before running any tests and provides logging in case of any
  * failures during the setup.
  */
+@Profile("dev")
 @Configuration
 @Slf4j
 public class PostgresTestConfig {

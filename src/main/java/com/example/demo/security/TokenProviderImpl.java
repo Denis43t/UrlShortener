@@ -39,4 +39,12 @@ public class TokenProviderImpl implements TokenProvider {
     public String refreshToken(String token) {
         return JWT.decode(token).getClaim("sub").asString();
     }
+
+    @Override
+    public String extractTokenFromHeader(String authorizationHeader) {
+        return (authorizationHeader != null
+                && authorizationHeader.startsWith("Bearer "))
+                ? authorizationHeader.substring(7)
+                : null;
+    }
 }
