@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  title: Team Project - URL Shortener - OpenAPI 3.0
+  description: |-
+    
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: "Development server"
+tags:
+  - name: auth
+    description: Operations with authentication and authorization
+  - name: url
+    description: Store and operation with url
+  - name: statistics
+    description: Information of using url
+paths:
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: "Registration a new user"
+      description: "Add new user to storage"
+      requestBody:
+        description: "User object that needs to be added to the store"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: goit18
+                  message:
+                    type: string
+                    example: User successfully registered.
+                  status:
+                    type: string
+                    example: 201 CREATED
+        '400':
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  Invalid username format:
+                    value:
+                      message: User is not registered. Username must be at least 5 and no more than 50 characters.
+                      status: 400 Bad Request
+                      
+                  Invalid password format:
+                    value:
+                      message: User is not registered. Password must be at least 8 characters long, including digits, uppercase, and lowercase letters.
+                      status: 400 Bad Request
+        '409':
+          description: "User with introduced username is already exists in storage"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  message:
+                    type: string
+                    example: User is not registered. User with name goit18 already exists. Please try a different name.
+                  status:
+                    type: string
+                    example: 409 Conflict
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: "Authorization and authentication user"
+      description: "Login user in api application and receiving token"
+      requestBody:
+        description: "User object that needs to authorization and authentication in application"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
+                  message:
+                    type: string
+                    example: User successfully authenticated.
+                  status:
+                    type: string
+                    example: 200 OK
+        '401':
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  Invalid username format:
+                    value:
+                      message: User is not authenticated. Username must be at least 5 and no more than 50 characters.
+                      status: 401 Unauthorized
+                  Invalid password format:
+                    value:
+                      message: User is not authenticated. Password must be at least 8 characters long, including digits, uppercase, and lowercase letters.
+                      status: 401 Unauthorized
+                  User is not found:
+                    value:
+                      message: User is not authenticated. User with name goit19 not found.
+                      status: 401 Unauthorized
+                  Invalid password:
+                    value:
+                      message: User is not authenticated. Invalid password. Please try again.
+                      status: 401 Unauthorized
+  /statistics/{shortUrl}:
+    get:
+      tags:
+        - statistics
+      summary: "Statistic by URL"
+      description: ""
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/URL'
+        required: false
+      responses: 
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/URL'
+      parameters:
+        -ShortUrl:
+            name: shortUrl
+            in: paths
+            description: short url for getting statistics
+            required: true
+            schema:
+              type: string
+              exemple: aaa
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+         description: "Validates that the username length is between 5 and 50."
+         type: string
+         minLength: 5
+         maxLength: 50
+         nullable: false
+         example: goit18
+        password:
+         description: "Validates that the password has a minimum length of 8 and contains at least one lowercase letter, one uppercase letter, and one digit."
+         type: string
+         nullable: false
+         minLength: 8
+         example: Thread18
+    URL:
+      properties:
+        shortUrl:
+          type: string
+          example: aaa
+        originalURL:
+          type: string
+          example: https://docs.spring.io/
+        clickCount:
+          type: integer
+          example: 10
+        createdAt:
+          type: string
+          example: 2025-01-15
+    ApiSuccsesResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+    ApiUnsuccsesResponse:
+      type: object
+      properties: 
+          message:
+            type: string
+            example: User is not registered. Username must be at least 5 and no more than 50 characters.
+          status:
+            type: string
+            example: 400 Bad Request
+  requestBodies:
