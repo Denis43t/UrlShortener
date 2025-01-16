@@ -29,25 +29,22 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       responses:
-        '200':
+        '201':
           description: Successful operation
           content:
             application/json:
               schema:
                 type: object
-                properties: 
-                  id:
+                properties:
+                  message:
+                    type: string
+                    example: User successfully registered. 
+                  userId:
                     type: integer
                     example: 1
                   username:
                     type: string
                     example: goit18
-                  message:
-                    type: string
-                    example: User successfully registered.
-                  status:
-                    type: string
-                    example: 201 CREATED
         '400':
           description: ""
           content:
@@ -58,25 +55,20 @@ paths:
                   Invalid username format:
                     value:
                       message: User is not registered. Username must be at least 5 and no more than 50 characters.
-                      status: 400 Bad Request
                       
                   Invalid password format:
                     value:
                       message: User is not registered. Password must be at least 8 characters long, including digits, uppercase, and lowercase letters.
-                      status: 400 Bad Request
         '409':
           description: "User with introduced username is already exists in storage"
           content:
             application/json:
               schema:
-                type: object
-                properties: 
-                  message:
-                    type: string
-                    example: User is not registered. User with name goit18 already exists. Please try a different name.
-                  status:
-                    type: string
-                    example: 409 Conflict
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  User already exists:
+                    value:
+                      message: User is not registered. Username must be at least 5 and no more than 50 characters.
   /auth/login:
     post:
       tags:
@@ -98,15 +90,12 @@ paths:
               schema:
                 type: object
                 properties: 
-                  token:
-                    type: string
-                    example: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
                   message:
                     type: string
                     example: User successfully authenticated.
-                  status:
+                  token:
                     type: string
-                    example: 200 OK
+                    example: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
         '401':
           description: ""
           content:
@@ -117,48 +106,49 @@ paths:
                   Invalid username format:
                     value:
                       message: User is not authenticated. Username must be at least 5 and no more than 50 characters.
-                      status: 401 Unauthorized
                   Invalid password format:
                     value:
                       message: User is not authenticated. Password must be at least 8 characters long, including digits, uppercase, and lowercase letters.
-                      status: 401 Unauthorized
                   User is not found:
                     value:
                       message: User is not authenticated. User with name goit19 not found.
-                      status: 401 Unauthorized
                   Invalid password:
                     value:
                       message: User is not authenticated. Invalid password. Please try again.
-                      status: 401 Unauthorized
   /statistics/{shortUrl}:
     get:
       tags:
         - statistics
       summary: "Statistic by URL"
       description: ""
-      requestBody:
-        description: ""
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/URL'
-        required: false
-      responses: 
+      parameters:
+            - in: path
+              name: shortUrl
+              description: short url for getting statistics
+              schema:
+                type: string
+                example: aaa
+              required: true
+      responses:
         '200':
           description: ""
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/URL'
-      parameters:
-        -ShortUrl:
-            name: shortUrl
-            in: paths
-            description: short url for getting statistics
-            required: true
-            schema:
-              type: string
-              exemple: aaa
+  /statistics/user:
+    get:
+      tags:
+        - statistics
+      summary: "Statistic by User"
+      description: ""
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/URL'
 components:
   schemas:
     User:
@@ -191,23 +181,9 @@ components:
         createdAt:
           type: string
           example: 2025-01-15
-    ApiSuccsesResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        type:
-          type: string
-        message:
-          type: string
     ApiUnsuccsesResponse:
       type: object
       properties: 
           message:
             type: string
             example: User is not registered. Username must be at least 5 and no more than 50 characters.
-          status:
-            type: string
-            example: 400 Bad Request
-  requestBodies:
