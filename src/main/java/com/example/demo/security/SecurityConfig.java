@@ -25,6 +25,10 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/api/v1/docs", "/api/v2/docs",
                                 "/documentation/openapiV1.json",
                                 "/documentation/openapiV2.json",
+                                "/documentation/openapiV1.yaml",
+                                "/documentation/openapiV2.yaml",
+                                "/openapiV1.yaml",
+                                "/openapiV2.yaml",
                                 "/api/v1/auth/**",
                                 "/api/v2/**").permitAll()
                         .anyRequest().permitAll()
