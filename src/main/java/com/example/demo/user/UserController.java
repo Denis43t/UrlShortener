@@ -36,7 +36,7 @@ public class UserController {
      * @param request - The {@link UserRequest} object containing user credentials (username and password).
      * @return A {@link ResponseEntity} containing the {@link RegisterUserResponse} with the registration status.
      */
-    @PostMapping("/register")
+    @PostMapping(path = {"/register", "/register/"})
     public ResponseEntity<RegisterUserResponse> registerUser(@RequestBody UserRequest request) {
         RegisterUserResponse response = userService.registerUser(request);
         return ResponseEntity.status(response.getStatus()).body(response);
@@ -48,7 +48,7 @@ public class UserController {
      * @param request - The {@link UserRequest} object containing user credentials (username and password).
      * @return A {@link ResponseEntity} containing the {@link AuthUserResponse} with the authentication status.
      */
-    @PostMapping("/login")
+    @PostMapping(path = {"/login", "/login/"})
     @Cacheable(value = "authCache", key = "#request.username")
     public ResponseEntity<AuthUserResponse> authenticateUser(@RequestBody UserRequest request) {
         AuthUserResponse response = userService.authenticateUser(request);
