@@ -19,11 +19,11 @@ import java.util.Set;
  * {@link jakarta.persistence.GeneratedValue}, {@link jakarta.persistence.GenerationType},
  * and {@link lombok.Data}, {@link lombok.AllArgsConstructor}, {@link lombok.NoArgsConstructor},
  * {@link lombok.Builder} to define the entity and automatically generate common methods. </p>
- *  <p> This class has a one-to-many relationship with the {@link Url} entity.
- *  * The {@code urls} field represents the set of URLs associated with the user.
- *  * This relationship will be fully implemented once the URL package is completed.
- *   <p> <b>//todo:</b> Field urls should be uncommented and connected to the appropriate URL mapping
- *  * once the {@link Url} package is fully implemented.</p>
+ * <p> This class has a one-to-many relationship with the {@link Url} entity.
+ * * The {@code urls} field represents the set of URLs associated with the user.
+ * * This relationship will be fully implemented once the URL package is completed.
+ * <p> <b>//todo:</b> Field urls should be uncommented and connected to the appropriate URL mapping
+ * * once the {@link Url} package is fully implemented.</p>
  */
 @Entity
 @Table(schema = "url_shortener", name = "users")
@@ -57,7 +57,6 @@ public class User {
      * This field represents the one-to-many relationship between User and URLs.
      * It will be implemented once the URL package is completed.
      */
-    //@OneToMany
-    //@JoinColumn(name = "url_id")
-    //public Set<Url> urls;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    public Set<Url> urls;
 }
