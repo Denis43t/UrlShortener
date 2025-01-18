@@ -174,6 +174,6 @@ class UserServiceTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatus());
-        assertEquals("User is not authenticated. Invalid password. Please try again.", response.getMessage());
+        assertEquals("User is not authenticated. Wrong password. Please try again.", response.getMessage());
     }
 }
