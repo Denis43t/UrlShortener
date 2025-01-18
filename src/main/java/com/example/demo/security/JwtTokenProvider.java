@@ -33,10 +33,8 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
-
             String subject = jwt.getSubject();
             Date expiration = jwt.getExpiresAt();
-
             Date now = new Date();
 
             if (expiration != null && now.before(expiration)) {
@@ -71,9 +69,7 @@ public class JwtTokenProvider {
             Date expiration = decodedJWT.getExpiresAt();
 
             if (expiration != null && expiration.before(new Date())) {
-                // Token is expired, generate a new one
                 Algorithm algorithm = Algorithm.HMAC256("secret");  // Use your actual secret key here
-                // Set new expiration (1 hour from now)
 
                 return JWT.create()
                         .withSubject(subject)
@@ -87,7 +83,6 @@ public class JwtTokenProvider {
 
         return "";
     }
-
 
     public String extractTokenFromHeader(String authorizationHeader) {
         return (authorizationHeader != null

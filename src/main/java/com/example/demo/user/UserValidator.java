@@ -57,7 +57,7 @@ public class UserValidator {
      * @return {@code true} if the username format is valid, otherwise {@code false}.
      */
     private boolean isValidUsernameFormat(String username) {
-        return username.length() >= MIN_USERNAME_LENGTH && username.length() <= MAX_USERNAME_LENGTH;
+        return Objects.nonNull(username) && username.length() >= MIN_USERNAME_LENGTH && username.length() <= MAX_USERNAME_LENGTH;
     }
 
     /**

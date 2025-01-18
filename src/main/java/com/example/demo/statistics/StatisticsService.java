@@ -1,6 +1,5 @@
 package com.example.demo.statistics;
 
-
 import com.example.demo.security.AuthorizationService;
 import com.example.demo.url.Url;
 import com.example.demo.url.UrlRepository;
@@ -18,13 +17,30 @@ import java.util.Optional;
 
 import static com.example.demo.util.MessageProvider.*;
 
+/**
+ * Service class responsible for handling URL statistics.
+ * This service interacts with the URL repository and the authorization service to retrieve and process URL statistics.
+ */
 @Service
 @RequiredArgsConstructor
 public class StatisticsService {
+
+    /**
+     * The URL repository for accessing URL data.
+     */
     private final UrlRepository urlRepository;
+
+    /**
+     * The authorization service to handle user authentication.
+     */
     private final AuthorizationService authorizationService;
 
-
+    /**
+     * Retrieves all URLs associated with the authenticated user and calculates total visits.
+     *
+     * @param request The URL request containing authorization information.
+     * @return A response object containing the total visits and a list of URLs.
+     */
     @Transactional
     public StatisticsResponse getAllUrlsByUser(UrlRequest request) {
         Optional<User> userOptional = authorizationService.getAuthorizedUser(request.getAuthorizationHeader());
@@ -35,7 +51,6 @@ public class StatisticsService {
 
         User user = userOptional.get();
 
-
         List<Url> urls = urlRepository.findAllUrlsByUsername(user.getUsername());
 
         if (urls.isEmpty()) {
@@ -45,7 +60,7 @@ public class StatisticsService {
         List<UrlDto> list = new ArrayList<>();
 
         for (Url url : urls) {
-            list.add(new UrlDto(url.getShortUrl(),url.getLongUrl(), url.getVisits()));
+            list.add(new UrlDto(url.getShortUrl(), url.getLongUrl(), url.getVisits()));
         }
 
         long totalVisits = list.stream()
@@ -55,7 +70,12 @@ public class StatisticsService {
         return StatisticsResponse.success(totalVisits, list);
     }
 
-
+    /**
+     * Retrieves the number of visits for a specific short URL associated with the authenticated user.
+     *
+     * @param request The URL request containing the short URL and authorization information.
+     * @return A response object containing the number of visits.
+     */
     @Transactional
     public StatisticsResponse getVisitsByShortUrl(UrlRequest request) {
         Optional<User> userOptional = authorizationService.getAuthorizedUser(request.getAuthorizationHeader());

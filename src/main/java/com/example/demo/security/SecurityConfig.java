@@ -6,31 +6,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
+/**
+ * Configuration class for the security settings, specifically for password encoding.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    /**
+     * Bean definition for the password encoder.
+     *
+     * This encoder uses BCrypt hashing to securely encode passwords.
+     *
+     * @return A BCryptPasswordEncoder instance.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-       return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();  // Returns a BCryptPasswordEncoder instance for password encoding.
     }
 }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auths -> auths
-//                        .requestMatchers("/api/v1/auth/register",
-//                                "/api/v1/auth/login",
-//                                "/api/v1/url/short",
-//                                "/api/v1/url/long",
-//                                "/error")
-//                        .permitAll()
-//                );
-//
-//        return http.build();
-//    }
-
-
