@@ -6,6 +6,7 @@ import com.example.demo.user.dto.RegisterUserResponse;
 import com.example.demo.user.dto.UserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class UserController {
      * @param request - The {@link UserRequest} object containing user credentials (username and password).
      * @return A {@link ResponseEntity} containing the {@link RegisterUserResponse} with the registration status.
      */
-    @PostMapping("/register")
+    @PostMapping(path = {"/register", "/register/"})
     public ResponseEntity<RegisterUserResponse> registerUser(@RequestBody UserRequest request) {
         RegisterUserResponse response = userService.registerUser(request);
         return ResponseEntity.status(response.getStatus()).body(response);
@@ -48,10 +49,15 @@ public class UserController {
      * @param request - The {@link UserRequest} object containing user credentials (username and password).
      * @return A {@link ResponseEntity} containing the {@link AuthUserResponse} with the authentication status.
      */
-    @PostMapping("/login")
+    @PostMapping(path = {"/login", "/login/"})
     @Cacheable(value = "authCache", key = "#request.username")
     public ResponseEntity<AuthUserResponse> authenticateUser(@RequestBody UserRequest request) {
         AuthUserResponse response = userService.authenticateUser(request);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + response.getToken());
+        return ResponseEntity
+                .status(response.getStatus())
+                .headers(headers)
+                .body(response);
     }
 }

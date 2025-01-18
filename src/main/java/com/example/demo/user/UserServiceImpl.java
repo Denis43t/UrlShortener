@@ -1,10 +1,11 @@
 package com.example.demo.user;
 
-import com.example.demo.security.TokenProvider;
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.user.dto.AuthUserResponse;
 import com.example.demo.user.dto.RegisterUserResponse;
 import com.example.demo.user.dto.UserRequest;
 import com.example.demo.user.dto.UserResponse;
+import com.example.demo.util.MessageProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Service class responsible for handling user-related operations such as registration and authentication.
  * <p>
  * This service interacts with the {@link UserRepository} to perform CRUD operations on the `User` entity.
- * It also validates user input using the {@link UserValidator} and utilizes the {@link TokenProvider} for token generation.
+ * It also validates user input using the {@link UserValidator} and utilizes the {@link JwtTokenProvider} for token generation.
  */
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserValidator validator;
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
 
         if (userRepository.existsByUsername(username)) {
-            return RegisterUserResponse.failed(UserMessageProvider.generateUserExistsMessage(username),
+            return RegisterUserResponse.failed(MessageProvider.generateUserExistsMessage(username),
                     HttpStatus.CONFLICT);
         }
 
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
      * Authenticates a user using the provided {@link UserRequest}.
      *
      * <p> Checks if the username exists in the database, verifies the password using the {@link PasswordEncoder},
-     * and generates an authentication token using the {@link TokenProvider}.
+     * and generates an authentication token using the {@link JwtTokenProvider}.
      *
      * @param request The {@link UserRequest} containing the username and password.
      * @return An {@link AuthUserResponse} indicating the success or failure of authentication.
@@ -88,13 +89,13 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isEmpty()) {
-            return AuthUserResponse.failed(UserMessageProvider.generateUserNotFoundMessage(username));
+            return AuthUserResponse.failed(MessageProvider.generateUserNotFoundMessage(username));
         }
 
         User user = userOptional.get();
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            return AuthUserResponse.failed(UserMessageProvider.INVALID_PASSWORD_MESSAGE);
+            return AuthUserResponse.failed(MessageProvider.WRONG_PASSWORD_MESSAGE);
         }
 
         String token = tokenProvider.generateToken(username);

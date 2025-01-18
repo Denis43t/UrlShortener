@@ -1,4 +1,4 @@
-package com.example.demo.user;
+package com.example.demo.util;
 
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * used in the user registration, authentication, and validation processes.
  */
 @Service
-public class UserMessageProvider {
+public class MessageProvider {
 
     /**
      * Error message indicating the username format requirement.
@@ -32,7 +32,14 @@ public class UserMessageProvider {
     /**
      * Error message indicating an invalid password input.
      */
-    public static final String INVALID_PASSWORD_MESSAGE = "Invalid password. Please try again.";
+    public static final String WRONG_PASSWORD_MESSAGE = "Wrong password. Please try again.";
+
+    public static final String INCORRECT_URL_MESSAGE = "Url is incorrect.";
+    public static final String NOT_AUTHENTICATED_MESSAGE =
+            "User is not authenticated. Please login to receive the urls.";
+    public static final String URL_LIST_EMPTY_MESSAGE = "URL list is empty.";
+    public static final String URL_NOT_FOUND_MESSAGE = "URL could not be found.";
+    public static final String INCORRECT_TOKEN_MESSAGE = "Incorrect token. Please try again.";
 
     /**
      * Generates a message indicating that a user with the specified username already exists.
