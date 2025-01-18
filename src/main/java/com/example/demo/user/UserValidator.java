@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
 import com.example.demo.user.dto.UserResponse;
+import com.example.demo.util.MessageProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +31,13 @@ public class UserValidator {
     public Optional<UserResponse> validateUser(String username, String password) {
         if (!isValidUsernameFormat(username)) {
             return Optional.ofNullable(UserResponse.builder()
-                    .message(UserMessageProvider.USERNAME_FORMAT_MESSAGE)
+                    .message(MessageProvider.USERNAME_FORMAT_MESSAGE)
                     .status(HttpStatus.BAD_REQUEST).build());
         }
 
         if (!isValidPasswordFormat(password)) {
             return Optional.ofNullable(UserResponse.builder()
-                    .message(UserMessageProvider.PASSWORD_COMPLEXITY_MESSAGE)
+                    .message(MessageProvider.PASSWORD_COMPLEXITY_MESSAGE)
                     .status(HttpStatus.BAD_REQUEST)
                     .build());
         }

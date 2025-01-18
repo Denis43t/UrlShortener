@@ -57,6 +57,6 @@ public class User {
      * This is a one-to-many relationship, where a user can have multiple URLs.
      * This relationship is lazily fetched, meaning that URLs are loaded only when accessed.
      */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Url> urls;
 }

@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
 import com.example.demo.user.dto.UserResponse;
+import com.example.demo.util.MessageProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ class UserValidatorTest {
 
         assertTrue(result.isPresent());
         assertEquals(HttpStatus.BAD_REQUEST, result.get().getStatus());
-        assertEquals(UserMessageProvider.USERNAME_FORMAT_MESSAGE, result.get().getMessage());
+        assertEquals(MessageProvider.USERNAME_FORMAT_MESSAGE, result.get().getMessage());
     }
 
     @Test
@@ -49,7 +50,7 @@ class UserValidatorTest {
 
         assertTrue(result.isPresent());
         assertEquals(HttpStatus.BAD_REQUEST, result.get().getStatus());
-        assertEquals(UserMessageProvider.PASSWORD_COMPLEXITY_MESSAGE, result.get().getMessage());
+        assertEquals(MessageProvider.PASSWORD_COMPLEXITY_MESSAGE, result.get().getMessage());
     }
 
     @Test
@@ -61,7 +62,7 @@ class UserValidatorTest {
 
         assertTrue(result.isPresent());
         assertEquals(HttpStatus.BAD_REQUEST, result.get().getStatus());
-        assertEquals(UserMessageProvider.PASSWORD_COMPLEXITY_MESSAGE, result.get().getMessage());
+        assertEquals(MessageProvider.PASSWORD_COMPLEXITY_MESSAGE, result.get().getMessage());
     }
 
     @Test
@@ -73,7 +74,7 @@ class UserValidatorTest {
 
         assertTrue(result.isPresent());
         assertEquals(HttpStatus.BAD_REQUEST, result.get().getStatus());
-        assertEquals(UserMessageProvider.PASSWORD_COMPLEXITY_MESSAGE, result.get().getMessage());
+        assertEquals(MessageProvider.PASSWORD_COMPLEXITY_MESSAGE, result.get().getMessage());
     }
 }
 

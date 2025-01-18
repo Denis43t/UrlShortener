@@ -6,6 +6,7 @@ import com.example.demo.user.dto.RegisterUserResponse;
 import com.example.demo.user.dto.UserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +53,11 @@ public class UserController {
     @Cacheable(value = "authCache", key = "#request.username")
     public ResponseEntity<AuthUserResponse> authenticateUser(@RequestBody UserRequest request) {
         AuthUserResponse response = userService.authenticateUser(request);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + response.getToken());
+        return ResponseEntity
+                .status(response.getStatus())
+                .headers(headers)
+                .body(response);
     }
 }

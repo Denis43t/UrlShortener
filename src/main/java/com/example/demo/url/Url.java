@@ -47,14 +47,18 @@ public class Url {
      * The generated short URL.
      * This field contains the shortened version of the long URL, unique across the system.
      */
-    @Column(name = "short_url", length = 10, nullable = false, unique = true)
+    @Column(name = "short_url", length = 50, nullable = false, unique = true)
     private String shortUrl;
+
+
+    @Column
+    private long visits;
 
     /**
      * The user associated with this URL.
      * This is a Many-to-One relationship, linking each URL to the corresponding User entity.
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }
