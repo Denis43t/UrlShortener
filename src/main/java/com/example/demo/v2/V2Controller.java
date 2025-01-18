@@ -1,7 +1,6 @@
 package com.example.demo.v2;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,22 +15,21 @@ import java.util.Map;
  * follows a similar structure, returning a `Map` containing a key-value message.
  */
 @RestController
-@RequestMapping("/api/v2")
+@RequestMapping("/api/v2/")
 public class V2Controller {
 
     /**
-     * Handles GET requests to the base URL of version 2.
+     * Handles all requests under the `/api/v2/**` path.
      *
-     * <p> This endpoint responds with a simple message indicating that version 2
-     * is under development.
+     * This method captures all requests under the version 2 of the API, whether they use GET, POST, PUT, DELETE, etc.
+     * It returns a basic message indicating that version 2 is under development.
      *
-     * @return A ResponseEntity containing a map with a key "message" and a value
-     * indicating the current status of version 2.
+     * @return a ResponseEntity containing a Map with a message key.
      */
-    @GetMapping
-    public ResponseEntity<Map<String, String>> get() {
+    @RequestMapping(path = "/**")
+    public ResponseEntity<Map<String, String>> handleAllRequests() {
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Version 2 is under development");
+        response.put("message", "Version 2 is under development.");
         return ResponseEntity.ok(response);
     }
 }

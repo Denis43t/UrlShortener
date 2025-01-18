@@ -1,6 +1,6 @@
 package com.example.demo.user;
 
-import com.example.demo.security.TokenProvider;
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.user.dto.AuthUserResponse;
 import com.example.demo.user.dto.RegisterUserResponse;
 import com.example.demo.user.dto.UserRequest;
@@ -38,7 +38,7 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private TokenProvider authService;
+    private JwtTokenProvider authService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -174,6 +174,6 @@ class UserServiceTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatus());
-        assertEquals("User is not authenticated. Invalid password. Please try again.", response.getMessage());
+        assertEquals("User is not authenticated. Wrong password. Please try again.", response.getMessage());
     }
 }

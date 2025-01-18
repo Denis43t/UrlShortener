@@ -1,30 +1,27 @@
 package com.example.demo.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration class for the security settings, specifically for password encoding.
+ */
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    /**
+     * Bean definition for the password encoder.
+     *
+     * This encoder uses BCrypt hashing to securely encode passwords.
+     *
+     * @return A BCryptPasswordEncoder instance.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    //заглушка; потрібно реалізувати;
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auths -> auths
-                        .anyRequest().permitAll()
-                );
-
-        return http.build();
+        return new BCryptPasswordEncoder();  // Returns a BCryptPasswordEncoder instance for password encoding.
     }
 }
