@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${DB_URL}  # Використовуємо змінну середовища для URL
+    username: ${DB_USERNAME}  # Ім'я користувача з змінної середовища
+    password: ${DB_PASSWORD}  # Пароль з змінної середовища
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Для продакшн середовища зазвичай ставлять "validate"
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: url_shortener
+
+  logging:
+    level:
+      org.flywaydb.core: DEBUG
+      org.springframework.security: DEBUG
+
+  jwt:
+    secret: ${JWT_SECRET}  # Використовуємо змінну середовища для секрету JWT
