@@ -1,6 +1,5 @@
 package com.example.demo.statistics;
 
-import com.example.demo.url.dto.UrlDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -24,7 +23,7 @@ public class StatisticsResponse {
     /**
      * A list of URL DTOs containing detailed information about each URL.
      */
-    private List<UrlDto> urls;
+    private List<StatsUrlDto> urls;
 
     /**
      * A message providing additional information about the response.
@@ -44,7 +43,7 @@ public class StatisticsResponse {
      * @param urls A list of URL DTOs.
      * @param status The HTTP status of the response.
      */
-    public StatisticsResponse(Long visits, List<UrlDto> urls, HttpStatus status) {
+    public StatisticsResponse(Long visits, List<StatsUrlDto> urls, HttpStatus status) {
         this.visits = visits;
         this.urls = urls;
         this.status = status;
@@ -68,7 +67,7 @@ public class StatisticsResponse {
      * @param urls A list of URL DTOs.
      * @return A new StatisticsResponse instance representing success.
      */
-    public static StatisticsResponse success(long visits, List<UrlDto> urls) {
+    public static StatisticsResponse success(long visits, List<StatsUrlDto> urls) {
         return new StatisticsResponse(visits, urls, HttpStatus.OK);
     }
 

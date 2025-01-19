@@ -70,9 +70,16 @@ public class UrlServiceImpl implements UrlService {
 
         String shortUrl = urlGenerator.generateShortUrl();
 
+        LocalDateTime expiresAt = request.getExpiresAt();
+
+        if (expiresAt != null && LocalDateTime.now().isAfter(expiresAt)) {
+            return UrlResponse.failed(NOT_CORRECT_EXPIRES_AT, HttpStatus.BAD_REQUEST);
+        }
+
         Url url = Url.builder()
                 .shortUrl(shortUrl)
                 .longUrl(longUrl)
+                .expiresAt(expiresAt)
                 .user(user)
                 .build();
 
@@ -116,6 +123,13 @@ public class UrlServiceImpl implements UrlService {
         }
 
         Url url = urlOptional.get();
+
+        LocalDateTime expiresAt = url.getExpiresAt();
+
+        if (expiresAt != null && expiresAt.isBefore(LocalDateTime.now())) {
+            return UrlResponse.failed(EXPIRED_URL_MESSAGE, HttpStatus.GONE);
+        }
+
         url.setVisits(url.getVisits() + 1);
         urlRepository.save(url);
         return UrlResponse.success(null, url.getLongUrl(), null, null, HttpStatus.OK);

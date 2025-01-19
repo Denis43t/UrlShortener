@@ -61,11 +61,19 @@ public class Url {
     @Column
     private long visits;
 
+    /**
+     * The timestamp when the URL was created.
+     * Automatically generated and set by the database upon insertion.
+     * This field is immutable after creation.
+     */
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-
+    /**
+     * The timestamp indicating when the URL will expire.
+     * This field is optional and can be null if no expiration date is specified.
+     */
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 

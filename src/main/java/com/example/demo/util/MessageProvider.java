@@ -33,13 +33,15 @@ public class MessageProvider {
      * Error message indicating an invalid password input.
      */
     public static final String WRONG_PASSWORD_MESSAGE = "Wrong password. Please try again.";
-
     public static final String INCORRECT_URL_MESSAGE = "Url is incorrect.";
     public static final String NOT_AUTHENTICATED_MESSAGE =
             "User is not authenticated. Please login to receive the urls.";
     public static final String URL_LIST_EMPTY_MESSAGE = "URL list is empty.";
     public static final String URL_NOT_FOUND_MESSAGE = "URL could not be found.";
     public static final String INCORRECT_TOKEN_MESSAGE = "Incorrect token. Please try again.";
+    public static final String EXPIRED_URL_MESSAGE = "URL has expired.";
+    public static final String NOT_CORRECT_EXPIRES_AT =
+            "You cannot set the expiration date to a past date. Please choose a valid future date.";
 
     /**
      * Generates a message indicating that a user with the specified username already exists.

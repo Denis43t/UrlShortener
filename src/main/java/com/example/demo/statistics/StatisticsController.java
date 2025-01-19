@@ -22,13 +22,33 @@ public class StatisticsController {
      * @param header The Authorization header containing user credentials.
      * @return ResponseEntity containing the status and list of URLs.
      */
-    @GetMapping(path = {"/all", "all/"})
+    @GetMapping(path = {"/all", "/all/"})
     public ResponseEntity<StatisticsResponse> allUrls(
             @RequestHeader(value = "Authorization", defaultValue = "")
             String header) {
         UrlRequest request = new UrlRequest();
         request.setAuthorizationHeader(header);
         StatisticsResponse response = statisticsService.getAllUrlsByUser(request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    /**
+     * Endpoint to retrieve all active URLs associated with the authenticated user.
+     *
+     * This endpoint processes the provided Authorization header to authenticate the user,
+     * then fetches and returns a list of active URLs. Active URLs are those that have
+     * not yet expired.
+     *
+     * @param header The Authorization header containing user credentials.
+     * @return ResponseEntity containing the status and list of active URLs.
+     */
+    @GetMapping(path = {"/active ","/active/"})
+    public ResponseEntity<StatisticsResponse> activeUrls(
+            @RequestHeader(value = "Authorization", defaultValue = "")
+            String header) {
+        UrlRequest request = new UrlRequest();
+        request.setAuthorizationHeader(header);
+        StatisticsResponse response = statisticsService.getActiveUrlsByUser(request);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

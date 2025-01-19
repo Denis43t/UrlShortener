@@ -1,4 +1,4 @@
-package com.example.demo.url.dto;
+package com.example.demo.statistics;
 
 
 import lombok.AllArgsConstructor;
@@ -8,8 +8,10 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class UrlDto {
+public class StatsUrlDto {
     private String shortUrl;
     private String longUrl;
     private long visits;
+    private boolean isActive;
+    private LocalDateTime createdAt;
 }
