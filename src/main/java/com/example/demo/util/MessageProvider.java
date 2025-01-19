@@ -40,8 +40,11 @@ public class MessageProvider {
     public static final String URL_NOT_FOUND_MESSAGE = "URL could not be found.";
     public static final String INCORRECT_TOKEN_MESSAGE = "Incorrect token. Please try again.";
     public static final String EXPIRED_URL_MESSAGE = "URL has expired.";
-    public static final String NOT_CORRECT_EXPIRES_AT =
+    public static final String INCORRECT_EXPIRES_AT =
             "You cannot set the expiration date to a past date. Please choose a valid future date.";
+    public static final String URL_CREATED_MESSAGE = "Url has been created successfully.";
+    public static final String URL_UPDATED_MESSAGE = "Url has been updated successfully.";
+    public static final String URL_DELETED_MESSAGE = "Url has been deleted successfully.";
 
     /**
      * Generates a message indicating that a user with the specified username already exists.

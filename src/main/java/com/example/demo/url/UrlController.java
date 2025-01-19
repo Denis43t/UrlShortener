@@ -47,7 +47,8 @@ public class UrlController {
      */
     @PostMapping(path = {"/shortFromLong", "/shortFromLong/"})
     public ResponseEntity<UrlResponse> shortFromLong(@RequestBody UrlRequest request,
-                                                     @RequestHeader(value = "Authorization", defaultValue = "") String header) {
+                                                     @RequestHeader(value = "Authorization", defaultValue = "")
+                                                     String header) {
         request.setAuthorizationHeader(header);
         UrlResponse response = urlService.getShortUrlFromLongUrl(request);
         return ResponseEntity.status(response.getStatus()).body(response);
@@ -70,4 +71,48 @@ public class UrlController {
         UrlResponse response = urlService.getLongUrlFromShortUrl(request);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    /**
+     * Handles the PATCH request to update an existing URL.
+     *
+     * <p>This endpoint allows a client to update the details of an existing URL using the provided
+     * {@link UrlRequest}. The request must include the necessary data for updating the URL, and
+     * the `Authorization` header is required for authorization purposes. The method processes
+     * the update, invokes the corresponding service layer, and returns a {@link UrlResponse} with
+     * the result status.</p>
+     *
+     * @param request   The {@link UrlRequest} object containing the updated URL details.
+     * @param header    The `Authorization` header passed by the client to authenticate the request.
+     * @return          A {@link ResponseEntity} containing the {@link UrlResponse} with the result status.
+     */
+    @PatchMapping(path = {"/update", "/update/"})
+    public ResponseEntity<UrlResponse> updateUrl(@RequestBody UrlRequest request,
+                                                 @RequestHeader(value = "Authorization", defaultValue = "")
+                                                 String header) {
+        request.setAuthorizationHeader(header);
+        UrlResponse response = urlService.updateUrl(request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    /**
+     * Handles the DELETE request to remove an existing URL.
+     *
+     * <p>This endpoint allows a client to delete a URL by sending a {@link UrlRequest} containing
+     * the URL details. The `Authorization` header is required for authorization purposes. The method
+     * processes the delete request, interacts with the service layer, and returns a {@link UrlResponse}
+     * with the result status.</p>
+     *
+     * @param request   The {@link UrlRequest} object containing the details of the URL to be deleted.
+     * @param header    The `Authorization` header passed by the client to authenticate the request.
+     * @return          A {@link ResponseEntity} containing the {@link UrlResponse} with the result status.
+     */
+    @DeleteMapping(path = {"/delete", "/delete/"})
+    public ResponseEntity<UrlResponse> deleteUrl(@RequestBody UrlRequest request,
+                                                 @RequestHeader(value = "Authorization", defaultValue = "")
+                                                 String header) {
+        request.setAuthorizationHeader(header);
+        UrlResponse response = urlService.deleteUrl(request);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
 }

@@ -50,6 +50,12 @@ public class UrlServiceImpl implements UrlService {
     @Override
     @Transactional
     public UrlResponse getShortUrlFromLongUrl(UrlRequest request) {
+        Optional<User> userOptional = authorizationService.getAuthorizedUser(request.getAuthorizationHeader());
+
+        if (userOptional.isEmpty()) {
+            return UrlResponse.failed(NOT_AUTHENTICATED_MESSAGE, HttpStatus.UNAUTHORIZED);
+        }
+
         String longUrl = request.getUrl();
 
         if (longUrl == null || longUrl.isEmpty()) {
@@ -60,12 +66,6 @@ public class UrlServiceImpl implements UrlService {
             return UrlResponse.failed(INCORRECT_URL_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 
-        Optional<User> userOptional = authorizationService.getAuthorizedUser(request.getAuthorizationHeader());
-
-        if (userOptional.isEmpty()) {
-            return UrlResponse.failed(NOT_AUTHENTICATED_MESSAGE, HttpStatus.UNAUTHORIZED);
-        }
-
         User user = userOptional.get();
 
         String shortUrl = urlGenerator.generateShortUrl();
@@ -73,7 +73,7 @@ public class UrlServiceImpl implements UrlService {
         LocalDateTime expiresAt = request.getExpiresAt();
 
         if (expiresAt != null && LocalDateTime.now().isAfter(expiresAt)) {
-            return UrlResponse.failed(NOT_CORRECT_EXPIRES_AT, HttpStatus.BAD_REQUEST);
+            return UrlResponse.failed(INCORRECT_EXPIRES_AT, HttpStatus.BAD_REQUEST);
         }
 
         Url url = Url.builder()
@@ -90,6 +90,7 @@ public class UrlServiceImpl implements UrlService {
                 longUrl,
                 LocalDateTime.now(),
                 user.getUsername(),
+                URL_CREATED_MESSAGE,
                 HttpStatus.CREATED
         );
     }
@@ -132,7 +133,91 @@ public class UrlServiceImpl implements UrlService {
 
         url.setVisits(url.getVisits() + 1);
         urlRepository.save(url);
-        return UrlResponse.success(null, url.getLongUrl(), null, null, HttpStatus.OK);
+        return UrlResponse.success(
+                null,
+                url.getLongUrl(),
+                null,
+                null,
+                null,
+                HttpStatus.OK);
+    }
+
+    /**
+     * Implementation of the {@link UrlResponse} interface for handling URL update operations.
+     *
+     * This method processes a request to update an existing URL. It validates the user's authorization,
+     * retrieves the corresponding URL from the database, updates the short URL, and persists the changes.
+     * Finally, it returns a response containing the updated URL details.
+     *
+     * @param request   The {@link UrlRequest} object containing the details for the URL update.
+     * @return          A {@link UrlResponse} containing the result status and updated URL details.
+     *                  If the user is not authenticated or the URL is not found, an appropriate error message
+     *                  with the corresponding HTTP status is returned.
+     */
+    @Override
+    @Transactional
+    public UrlResponse updateUrl(UrlRequest request) {
+        Optional<User> userOptional = authorizationService.getAuthorizedUser(request.getAuthorizationHeader());
+
+        if (userOptional.isEmpty()) {
+            return UrlResponse.failed(NOT_AUTHENTICATED_MESSAGE, HttpStatus.UNAUTHORIZED);
+        }
+
+        Optional<Url> urlOptional = urlRepository.findUrlByShortUrl(request.getUrl());
+
+        if (urlOptional.isEmpty()) {
+            return UrlResponse.failed(URL_NOT_FOUND_MESSAGE, HttpStatus.NOT_FOUND);
+        }
+
+        Url url = urlOptional.get();
+        String shortUrl = urlGenerator.generateShortUrl();
+        url.setShortUrl(shortUrl);
+        urlRepository.save(url);
+        return UrlResponse.success(
+                shortUrl,
+                url.getLongUrl(),
+                url.getCreatedAt(),
+                userOptional.get().getUsername(),
+                URL_UPDATED_MESSAGE,
+                HttpStatus.OK);
+    }
+
+    /**
+     * Implementation of the {@link UrlResponse} interface for handling URL delete operations.
+     *
+     * This method processes a request to delete an existing URL. It validates the user's authorization,
+     * retrieves the corresponding URL from the database, performs the deletion, and returns a response
+     * indicating the successful deletion.
+     *
+     * @param request   The {@link UrlRequest} object containing the details for the URL deletion.
+     * @return          A {@link UrlResponse} containing the result status indicating the URL has been deleted.
+     *                  If the user is not authenticated or the URL is not found, an appropriate error message
+     *                  with the corresponding HTTP status is returned.
+     */
+    @Override
+    @Transactional
+    public UrlResponse deleteUrl(UrlRequest request) {
+        Optional<User> userOptional = authorizationService.getAuthorizedUser(request.getAuthorizationHeader());
+
+        if (userOptional.isEmpty()) {
+            return UrlResponse.failed(NOT_AUTHENTICATED_MESSAGE, HttpStatus.UNAUTHORIZED);
+        }
+
+        Optional<Url> urlOptional = urlRepository.findUrlByShortUrl(request.getUrl());
+
+        if (urlOptional.isEmpty()) {
+            return UrlResponse.failed(URL_NOT_FOUND_MESSAGE, HttpStatus.NOT_FOUND);
+        }
+
+        Url url = urlOptional.get();
+        urlRepository.delete(url);
+        return UrlResponse.success(
+                null,
+                null,
+                null,
+                null,
+                URL_DELETED_MESSAGE,
+                HttpStatus.OK);
     }
 }
 

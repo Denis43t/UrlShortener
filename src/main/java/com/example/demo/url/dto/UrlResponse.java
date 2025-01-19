@@ -3,6 +3,7 @@ package com.example.demo.url.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
 public class UrlResponse {
 
     /**
@@ -60,11 +62,13 @@ public class UrlResponse {
                        String longUrl,
                        LocalDateTime createdAt,
                        String author,
+                       String message,
                        HttpStatus status) {
         this.shortUrl = shortUrl;
         this.longUrl = longUrl;
         this.createdAt = createdAt;
         this.author = author;
+        this.message = message;
         this.status = status;
     }
 
@@ -93,8 +97,9 @@ public class UrlResponse {
                                       String longUrl,
                                       LocalDateTime createdAt,
                                       String author,
+                                      String message,
                                       HttpStatus status) {
-        return new UrlResponse(shortUrl, longUrl, createdAt, author, status);
+        return new UrlResponse(shortUrl, longUrl, createdAt, author, message, status);
     }
 
     /**
