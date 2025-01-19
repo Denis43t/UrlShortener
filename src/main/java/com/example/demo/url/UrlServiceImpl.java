@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.example.demo.util.MessageProvider.*;
@@ -18,7 +19,7 @@ import static com.example.demo.util.MessageProvider.*;
  * for URL shortening and expansion. It handles URL-related operations such as validating input,
  * generating shortened URLs, retrieving long URLs from shortened URLs, and interacting with the
  * database through the `UrlRepository`.
- *
+ * <p>
  * The class is annotated with `@Service` to indicate it's a service component in the Spring framework.
  */
 @Service
@@ -32,13 +33,13 @@ public class UrlServiceImpl implements UrlService {
 
     /**
      * Generates a shortened URL from a given long URL.
-     *
+     * <p>
      * This method performs the following steps:
      * 1. Validates the long URL to ensure it's in the correct format.
      * 2. Checks if the user is authorized using the `AuthorizationService`.
      * 3. Generates a unique shortened URL using `ShortUrlGenerator`.
      * 4. Persists the URL entity into the database using `UrlRepository`.
-     *
+     * <p>
      * If the long URL is invalid, the method returns a `UrlResponse` with a `BAD_REQUEST` status.
      * If the user is not authenticated, the method returns a `UrlResponse` with an `UNAUTHORIZED` status.
      * Otherwise, it successfully saves the URL and returns a response with the shortened URL.
@@ -70,25 +71,31 @@ public class UrlServiceImpl implements UrlService {
         String shortUrl = urlGenerator.generateShortUrl();
 
         Url url = Url.builder()
-                .longUrl(longUrl)
                 .shortUrl(shortUrl)
+                .longUrl(longUrl)
                 .user(user)
                 .build();
 
         urlRepository.save(url);
 
-        return UrlResponse.success(shortUrl, null);
+        return UrlResponse.success(
+                shortUrl,
+                longUrl,
+                LocalDateTime.now(),
+                user.getUsername(),
+                HttpStatus.CREATED
+        );
     }
 
     /**
      * Retrieves the long URL from a given shortened URL.
-     *
+     * <p>
      * This method performs the following steps:
      * 1. Validates the shortened URL.
      * 2. Searches for the corresponding `Url` entity in the database using `UrlRepository`.
      * 3. If found, increments the visit count.
      * 4. Returns a `UrlResponse` with the long URL, or a failure response if the URL is not found.
-     *
+     * <p>
      * If the shortened URL is invalid or not found, the method returns a `UrlResponse` with appropriate status codes.
      *
      * @param request The `UrlRequest` containing the shortened URL.
@@ -111,7 +118,7 @@ public class UrlServiceImpl implements UrlService {
         Url url = urlOptional.get();
         url.setVisits(url.getVisits() + 1);
         urlRepository.save(url);
-        return UrlResponse.success(null, url.getLongUrl());
+        return UrlResponse.success(null, url.getLongUrl(), null, null, HttpStatus.OK);
     }
 }
 
