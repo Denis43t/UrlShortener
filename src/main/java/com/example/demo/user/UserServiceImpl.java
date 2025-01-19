@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService {
 
         if (userOptional.isEmpty()) {
             return AuthUserResponse.failed(UserMessageProvider.generateUserNotFoundMessage(username));
+//             throw new UrlNotFoundException();
         }
 
         User user = userOptional.get();
