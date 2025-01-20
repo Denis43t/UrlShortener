@@ -14,9 +14,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthorizationService {
 
-    private final UserRepository userRepository;  // Repository to interact with the user database.
+    private final UserRepository userRepository;
 
-    private final JwtTokenProvider tokenProvider;  // Provider to manage JWT token operations.
+    private final JwtTokenProvider tokenProvider;
 
     /**
      * Extracts the authorized user from the provided authorization header.

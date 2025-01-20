@@ -1,0 +1,4 @@
+DATASOURCE_URL=jdbc:postgresql://db:5432/shortener_db
+DB_USERNAME=GoITgroup3User
+DB_PASSWORD=GoITgroup3Password
+JWT_SECRET_KEY=GoITgroup3JWTsecretKey

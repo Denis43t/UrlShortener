@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.Optional;
 
@@ -25,11 +26,22 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     /**
-     * Clears the database before each test to ensure isolation between tests.
+     * Sets up the necessary environment for the tests by initializing and starting a PostgreSQL container.
+     *
+     * This method creates a new instance of the PostgreSQL container using the official Docker image
+     * (`postgres:latest`). It configures the container to use a test database named "test_shortener_db",
+     * sets the username to "test_user", and the password to "test_password".
+     *
+     * The PostgreSQL container is then started, providing a clean and isolated database environment
+     * for running the unit tests.
      */
     @BeforeEach
-    void clearDatabase() {
-        userRepository.deleteAll();
+    public void setUp() {
+        PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
+                .withDatabaseName("test_shortener_db")
+                .withUsername("test_user")
+                .withPassword("test_password");
+        postgreSQLContainer.start();
     }
 
     /**

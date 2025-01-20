@@ -42,7 +42,7 @@ public class StatisticsController {
      * @param header The Authorization header containing user credentials.
      * @return ResponseEntity containing the status and list of active URLs.
      */
-    @GetMapping(path = {"/active ","/active/"})
+    @GetMapping(path = {"/active","/active/"})
     public ResponseEntity<StatisticsResponse> activeUrls(
             @RequestHeader(value = "Authorization", defaultValue = "")
             String header) {
