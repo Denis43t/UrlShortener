@@ -33,3 +33,4 @@ public class V2Controller {
         return ResponseEntity.ok(response);
     }
 }
+

@@ -1,45 +1,63 @@
 package com.goit.url_shortener.documentation;
 
-
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * In this application is using documentation from yaml file for supporting the principle of cline code.
- *  That's why for getting api documentation is used Api documentation controller.
- */
+import java.io.IOException;
+import java.nio.file.Files;
+
 @RestController
 @RequestMapping("/api")
 public class ApiDocumentationController {
 
     /**
-     * Redirects to the stable version of the API documentation.
+     * Returns the content of the stable version of the API documentation.
      *
-     * @return a redirect URL pointing to the stable OpenAPI documentation (openapiV1.json).
+     * @return JSON content of the openapiV1.json file.
      */
     @GetMapping("/docs")
-    public String getApiStableDocumentation() {
-        return "redirect:/documentation/openapiV1.json";
+    public ResponseEntity<String> getApiStableDocumentation() throws IOException {
+        return serveFile("static/documentation/openapiV1.json");
     }
 
     /**
-     * Redirects to the version 1 of the API documentation.
+     * Returns the content of version 1 of the API documentation.
      *
-     * @return a redirect URL pointing to OpenAPI documentation for version 1 (openapiV1.json).
+     * @return JSON content of the openapiV1.json file.
      */
     @GetMapping({"/v1/docs", "/v1/docs/openapiV1.json"})
-    public String getApiV1Documentation() {
-        return "redirect:/documentation/openapiV1.json";
+    public ResponseEntity<String> getApiV1Documentation() throws IOException {
+        return serveFile("static/documentation/openapiV1.json");
     }
 
     /**
-     * Redirects to the version 2 of the API documentation.
+     * Returns the content of version 2 of the API documentation.
      *
-     * @return a redirect URL pointing to OpenAPI documentation for version 2 (openapiV2.json).
+     * @return JSON content of the openapiV2.json file.
      */
-    @GetMapping({"/v2/docs", "/v1/docs/openapiV2.json"})
-    public String getApiV2Documentation() {
-        return "redirect:/documentation/openapiV2.json";
+    @GetMapping({"/v2/docs", "/v2/docs/openapiV2.json"})
+    public ResponseEntity<String> getApiV2Documentation() throws IOException {
+        return serveFile("static/documentation/openapiV2.json");
+    }
+
+    /**
+     * Reads a JSON file from the classpath and returns its content as a response.
+     *
+     * @param filePath path to the JSON file in the classpath.
+     * @return ResponseEntity with JSON content.
+     */
+    private ResponseEntity<String> serveFile(String filePath) throws IOException {
+        ClassPathResource resource = new ClassPathResource(filePath);
+
+        String content = Files.readString(resource.getFile().toPath());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
     }
 }

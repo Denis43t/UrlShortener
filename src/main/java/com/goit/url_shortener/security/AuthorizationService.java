@@ -26,7 +26,6 @@ public class AuthorizationService {
      */
     public Optional<User> getAuthorizedUser(String authorizationHeader) {
         String token = tokenProvider.extractTokenFromHeader(authorizationHeader);
-
         if (token != null && tokenProvider.validateToken(token)) {
             String username = tokenProvider.extractUsernameFromToken(token);
             return userRepository.findByUsername(username);

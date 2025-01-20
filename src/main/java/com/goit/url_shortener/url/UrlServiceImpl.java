@@ -50,6 +50,7 @@ public class UrlServiceImpl implements UrlService {
     @Override
     @Transactional
     public UrlResponse getShortUrlFromLongUrl(UrlRequest request) {
+
         Optional<User> userOptional = authorizationService.getAuthorizedUser(request.getAuthorizationHeader());
 
         if (userOptional.isEmpty()) {
