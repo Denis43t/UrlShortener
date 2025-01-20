@@ -19,5 +19,5 @@ ______________________________________________________________________________
 $env:DB_USERNAME="GoITgroup3User"
 $env:DB_PASSWORD="GoITgroup3Password"
 $env:JWT_SECRET_KEY="GoITgroup3JWTsecretKey"
-docker-compose up --build   
+docker-compose up --build
 ______________________________________________________________________________
