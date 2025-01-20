@@ -3,6 +3,7 @@ package com.goit.url_shortener.url;
 import com.goit.url_shortener.url.dto.UrlRequest;
 import com.goit.url_shortener.url.dto.UrlResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,7 @@ public class UrlController {
      * @param request The request body containing the shortened URL.
      * @return A `ResponseEntity` containing the `UrlResponse` with the long URL and its status.
      */
+    @Cacheable(value = "urlCache", key = "#request.getUrl")
     @GetMapping(path = {"/longFromShort", "/longFromShort/"})
     public ResponseEntity<UrlResponse> longFromShort(@RequestBody UrlRequest request) {
         UrlResponse response = urlService.getLongUrlFromShortUrl(request);
@@ -114,5 +116,4 @@ public class UrlController {
         UrlResponse response = urlService.deleteUrl(request);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
-
 }
