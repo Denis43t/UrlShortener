@@ -7,6 +7,10 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO class for URL statistics, including short URL, long URL, visits,
+ * activation status, creation, and expiration timestamps.
+ */
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
