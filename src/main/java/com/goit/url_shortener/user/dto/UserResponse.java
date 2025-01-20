@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
  * Base DTO class for user-related responses.
  * It contains a general message describing the outcome.
  *
- * <p> The class is annotated with {@link lombok.AllArgsConstructor} and {@link lombok.Data}
+ * <p> The class is annotated with {@link AllArgsConstructor} and {@link Data}
  * to generate the required constructors, getters, setters, equals, hashCode, and toString methods automatically. </p>
  *
  * <p> The {@link JsonIgnore} annotation is used to ignore the `status` field during JSON serialization. </p>
