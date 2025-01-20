@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Team Project - URL Shortener - OpenAPI 3.0
   description: |-
-    
+      The "UrlShortener" project is a web service that allows you to convert original URLs into shorter, unique ones. The user enters a original URL and the service generates a shortened URL that redirects to the original address when accessed.
   version: 1.0.0
 servers:
   - url: http://localhost:8080/api/v1
@@ -66,7 +66,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiUnsuccsesResponse'
               examples:
-                  User already exists:
+                  default:
                     value:
                       message: User is not registered. Username must be at least 5 and no more than 50 characters.
   /auth/login:
@@ -75,6 +75,14 @@ paths:
         - auth
       summary: "Authorization and authentication user"
       description: "Login user in api application and receiving token"
+      parameters:
+        - in: header
+          name: Authorization
+          description: token to authorizating and authenticating in apllication
+          schema:
+            type: string
+            example: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
+          required: false
       requestBody:
         description: "User object that needs to authorization and authentication in application"
         content:
@@ -115,6 +123,234 @@ paths:
                   Invalid password:
                     value:
                       message: User is not authenticated. Invalid password. Please try again.
+  /url/longFromShort:
+    get:
+      tags:
+        - url
+      summary: "Getting original URL adress from storage by shortened URL adress"
+      description: ""
+      requestBody:
+        description: "Request body, which contains the shortened URL."
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: aaa
+        required: true
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shortUrl:
+                    type: string
+                    example: aaa
+                  longUrl:
+                    type: string
+                    example: https://docs.spring.io/
+        '400':
+          description: "Shortened URL is null or empty"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: Url is incorrect.
+        '404':
+          description: "Shortened URL isn't consists in storage"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: URL could not be found.
+  /url/shortFromLong:
+    post:
+      tags:
+        - url
+      summary: "Making shortened URL adress from original URL adress"
+      description: "Save in storage original URL adress and generate short url"
+      parameters:
+        - in: header
+          name: Authorization
+          description: token to authorizating and authenticating in apllication
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
+          required: true
+      requestBody:
+        description: "Request body, which contains the original URL."
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://docs.spring.io/
+        required: true
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shortUrl:
+                    type: string
+                    example: aaa
+                  longUrl:
+                    type: string
+                    example: null
+        '400':
+          description: "Unsuccessful operation if shortened URL adress is null or empty"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: Url is incorrect.
+        '401':
+          description: "Unsuccessful operation if header don't consist Authorization header with token"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: User is not authenticated. Please login to receive the urls.
+  /url/update:
+    post:
+      tags:
+        - url
+      summary: "Updating information in storage of shortened URL"
+      description: "Generate new shortened URL adress"
+      parameters:
+        - in: header
+          name: Authorization
+          description: token to authorizating and authenticating in apllication
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
+          required: true
+      requestBody:
+        description: "Request body, which contains the shortened URL."
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://docs.spring.io/
+        required: true
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shortUrl:
+                    type: string
+                    example: aaa
+                  longUrl:
+                    type: string
+                    example: null
+        '400':
+          description: "Unsuccessful operation if shortened URL adress is null or empty"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: Url is incorrect.
+        '401':
+          description: "Unsuccessful operation if header don't consist Authorization header with token"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: User is not authenticated. Please login to receive the urls.
+  /url/delete:
+    post:
+      tags:
+        - url
+      summary: "Deleting information about URL from storage"
+      description: "Operation delete any information about URL by shortened URL"
+      parameters:
+        - in: header
+          name: Authorization
+          description: token to authorizating and authenticating in apllication
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
+          required: true
+      requestBody:
+        description: "Request body, which contains the shortened URL."
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://docs.spring.io/
+        required: true
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shortUrl:
+                    type: string
+                    example: aaa
+                  longUrl:
+                    type: string
+                    example: null
+        '400':
+          description: "Unsuccessful operation if shortened URL adress is null or empty"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: Url is incorrect.
+        '401':
+          description: "Unsuccessful operation if header don't consist Authorization header with token"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUnsuccsesResponse'
+              examples:
+                  default:
+                    value:
+                      message: User is not authenticated. Please login to receive the urls.
   /statistics/{shortUrl}:
     get:
       tags:
@@ -122,6 +358,13 @@ paths:
       summary: "Statistic by URL"
       description: ""
       parameters:
+            - in: header
+              name: Authorization
+              description: token to authorizating and authenticating in apllication
+              schema:
+                type: string
+                example: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
+              required: true
             - in: path
               name: shortUrl
               description: short url for getting statistics
@@ -131,7 +374,7 @@ paths:
               required: true
       responses:
         '200':
-          description: ""
+          description: "Successful operation"
           content:
             application/json:
               schema:
@@ -142,6 +385,14 @@ paths:
         - statistics
       summary: "Statistic by User"
       description: ""
+      parameters:
+        - in: header
+          name: Authorization
+          description: token to authorizating and authenticating in apllication
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj
+          required: true
       responses:
         '200':
           description: ""
@@ -169,18 +420,31 @@ components:
          example: Thread18
     URL:
       properties:
-        shortUrl:
-          type: string
-          example: aaa
-        originalURL:
+        long_url:
           type: string
           example: https://docs.spring.io/
-        clickCount:
+          nullable: false
+          maxLength: 2000
+        short_url:
+          type: string
+          example: aaa
+          nullable: false
+          maxLength: 50
+        visits:
           type: integer
           example: 10
+          nullable: false
         createdAt:
           type: string
-          example: 2025-01-15
+          example: 2025-01-20 11:39
+          nullable: false
+        expiresAt:
+          type: string
+          example: 2025-01-21 11:39
+        user_id:
+          type: integer
+          nullable: false
+          example: 1
     ApiUnsuccsesResponse:
       type: object
       properties: 
