@@ -2,11 +2,13 @@ openapi: 3.0.3
 info:
   title: Team Project - URL Shortener - OpenAPI 3.0
   description: |-
-      The "UrlShortener" project is a web service that allows you to convert original URLs into shorter, unique ones. The user enters a original URL and the service generates a shortened URL that redirects to the original address when accessed.
+      The "UrlShortener" project is a web service that allows you to convert original URLs into shorter, unique ones. The user enters a original URL and the service generates a shortened URL that redirects to the original address when accessed. Statistics on the use of short links are also available.
   version: 1.0.0
 servers:
   - url: http://localhost:8080/api/v1
     description: "Development server"
+  - url: http://localhost:9999/api/v2
+    description: Production server
 tags:
   - name: auth
     description: Operations with authentication and authorization
