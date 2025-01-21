@@ -1,5 +1,4 @@
 ______________________________________________________________________________
-DATASOURCE_URL=jdbc:postgresql://db:5432/shortener_db
 DB_USERNAME=GoITgroup3User
 DB_PASSWORD=GoITgroup3Password
 JWT_SECRET_KEY=GoITgroup3JWTsecretKey
@@ -19,5 +18,13 @@ ______________________________________________________________________________
 $env:DB_USERNAME="GoITgroup3User"
 $env:DB_PASSWORD="GoITgroup3Password"
 $env:JWT_SECRET_KEY="GoITgroup3JWTsecretKey"
-docker-compose up --build
+docker-compose up --build   
+______________________________________________________________________________
+______________________________________________________________________________
+
+Запуск тестів:  (має бути запущений докер)
+mvn clean test -Dspring.profiles.active=dev
+
+Запуск додатку в режимі розробки:
+mvn clean spring-boot:run -Pdev
 ______________________________________________________________________________
