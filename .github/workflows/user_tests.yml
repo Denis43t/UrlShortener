@@ -25,4 +25,4 @@ jobs:
         run: chmod +x mvnw
 
       - name: Run tests with Maven
-        run: mvn clean test --batch-mode --update-snapshots verify
+        run: mvn clean test -Dspring.profiles.active=dev --batch-mode --update-snapshots verify
