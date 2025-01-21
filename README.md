@@ -1,6 +1,6 @@
-#REST API URL Shortener
+# REST API URL Shortener
 
-##Table of Contents
+## Table of Contents
 
 1. [Introduction](#introduction)
 2. [Features](#features)
@@ -15,12 +15,12 @@
 
 - - -
 
-###Introduction
+### Introduction
 The URL Shortener API is a RESTful web service designed to convert original URLs into shorter, unique ones and provide usage statistics. Users can generate short URLs, retrieve the original URLs, and view various statistics about their usage.
 
 - - -
 
-###Features
+### Features
 
 - User authentication and authorization using JWT.
 - URL shortening and retrieval.
@@ -29,7 +29,7 @@ The URL Shortener API is a RESTful web service designed to convert original URLs
 
 - - -
 
-###Technologies Used
+### Technologies Used
 
 - **Java**
 - **Spring Boot**
@@ -39,7 +39,7 @@ The URL Shortener API is a RESTful web service designed to convert original URLs
 
 - - -
 
-###Installation Guide
+### Installation Guide
 
 Clone the repository:
 
@@ -77,7 +77,7 @@ In order to create and run an application together with a database in docker con
 
 - - -
 
-###Configuration
+### Configuration
 ##### Global variables
 
 
@@ -92,7 +92,7 @@ production: `9999`
 
 - - -
 
-###API Documentation
+### API Documentation
 
 Open API documentation is availible by path `http://localhost:8080/swagger-ui/index.html` for the development server and by path `http://localhost:9999/swagger-ui/index.html` for the production server.
 
@@ -104,9 +104,9 @@ You may get an API documentation in *json* format by **GET** request to path `ap
 ***The API provides the following endpoints***
 
 For more detailed information and the ability to test the API, you can go to the interactive documentation by paths stated above.
-####Authentication
+#### Authentication
 
-#####Register User
+##### Register User
 
 - **POST** `/auth/register`
 
@@ -161,9 +161,9 @@ For more detailed information and the ability to test the API, you can go to the
 
    - **401: Unauthorized.**
 
-####URL Operations
+#### URL Operations
 
-#####Shorten URL
+##### Shorten URL
 
 - **POST** `/url/shortFromLong`
 
@@ -194,7 +194,7 @@ For more detailed information and the ability to test the API, you can go to the
 
 	- **401: Unauthorized access.**
 
-#####Retrieve Original URL
+##### Retrieve Original URL
 
 - **GET** `/url/longFromShort`
 
@@ -355,7 +355,7 @@ For more detailed information and the ability to test the API, you can go to the
 
 - - -
 
-###Security
+### Security
 
 The API uses JWT tokens for authentication. Include the token in the Authorization header for secured endpoints:
 
