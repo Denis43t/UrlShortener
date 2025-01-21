@@ -13,11 +13,11 @@ import java.util.Set;
  * Entity class representing a User in the system.
  * This class is mapped to the "users" table in the "url_shortener" schema.
  *
- * <p> The class is annotated with {@link jakarta.persistence.Entity},
- * {@link jakarta.persistence.Table}, {@link jakarta.persistence.Id},
- * {@link jakarta.persistence.GeneratedValue}, {@link jakarta.persistence.GenerationType},
- * and {@link lombok.Data}, {@link lombok.AllArgsConstructor}, {@link lombok.NoArgsConstructor},
- * {@link lombok.Builder} to define the entity and automatically generate common methods. </p>
+ * <p> The class is annotated with {@link Entity},
+ * {@link Table}, {@link Id},
+ * {@link GeneratedValue}, {@link GenerationType},
+ * and {@link Data}, {@link AllArgsConstructor}, {@link NoArgsConstructor},
+ * {@link Builder} to define the entity and automatically generate common methods. </p>
  * <p> This class has a one-to-many relationship with the {@link Url} entity.
  * * The {@code urls} field represents the set of URLs associated with the user.
  * * This relationship is mapped using the {@code @OneToMany} annotation, where each user can have multiple URLs. </p>

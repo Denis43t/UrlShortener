@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
  * Represents a URL entity in the system.
  * This class maps to the "urls" table in the "url_shortener" schema.
  *
- * <p> The `Url` entity is annotated with {@link jakarta.persistence.Entity},
- * {@link jakarta.persistence.Table}, {@link jakarta.persistence.Id},
- * {@link jakarta.persistence.GeneratedValue}, {@link jakarta.persistence.GenerationType},
- * and lombok annotations {@link lombok.Data}, {@link lombok.AllArgsConstructor},
- * {@link lombok.NoArgsConstructor}, {@link lombok.Builder} to define the entity and
+ * <p> The `Url` entity is annotated with {@link Entity},
+ * {@link Table}, {@link Id},
+ * {@link GeneratedValue}, {@link GenerationType},
+ * and lombok annotations {@link Data}, {@link AllArgsConstructor},
+ * {@link NoArgsConstructor}, {@link Builder} to define the entity and
  * automatically generate standard methods. </p>
  *
  * <p> This class maintains a Many-to-One relationship with the {@link User} entity.

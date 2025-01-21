@@ -8,7 +8,7 @@ import lombok.Data;
  * DTO (Data Transfer Object) that represents the user request for registration or login.
  * It contains the username and password fields needed for user authentication or registration processes.
  *
- * <p> The class is annotated with {@link lombok.AllArgsConstructor} and {@link lombok.Data}
+ * <p> The class is annotated with {@link AllArgsConstructor} and {@link Data}
  * to automatically generate constructors, getters, setters, equals, hashCode, and toString methods. </p>
  */
 @AllArgsConstructor
