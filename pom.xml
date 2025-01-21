@@ -41,6 +41,11 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>11.2.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -127,10 +132,10 @@
 
     <profiles>
         <profile>
-            <id>default</id>
+            <id>dev</id>
             <properties>
-                <spring.profiles.active>default</spring.profiles.active>
-                <spring.config.name>application-default</spring.config.name>
+                <spring.profiles.active>dev</spring.profiles.active>
+                <spring.config.name>application-dev</spring.config.name>
             </properties>
         </profile>
         <profile>

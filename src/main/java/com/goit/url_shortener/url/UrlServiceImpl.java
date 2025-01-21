@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.goit.url_shortener.util.MessageProvider.*;
@@ -90,6 +91,7 @@ public class UrlServiceImpl implements UrlService {
                 shortUrl,
                 longUrl,
                 LocalDateTime.now(),
+                expiresAt,
                 user.getUsername(),
                 URL_CREATED_MESSAGE,
                 HttpStatus.CREATED
@@ -140,6 +142,7 @@ public class UrlServiceImpl implements UrlService {
                 null,
                 null,
                 null,
+                null,
                 HttpStatus.OK);
     }
 
@@ -170,14 +173,27 @@ public class UrlServiceImpl implements UrlService {
             return UrlResponse.failed(URL_NOT_FOUND_MESSAGE, HttpStatus.NOT_FOUND);
         }
 
+        LocalDateTime expiresAt = request.getExpiresAt();
+
+        if (expiresAt != null && LocalDateTime.now().isAfter(expiresAt)) {
+            return UrlResponse.failed(INCORRECT_EXPIRES_AT, HttpStatus.BAD_REQUEST);
+        }
+
         Url url = urlOptional.get();
         String shortUrl = urlGenerator.generateShortUrl();
         url.setShortUrl(shortUrl);
+
+
+        if (Objects.nonNull(expiresAt)) {
+            url.setExpiresAt(expiresAt);
+        }
+
         urlRepository.save(url);
         return UrlResponse.success(
                 shortUrl,
                 url.getLongUrl(),
                 url.getCreatedAt(),
+                url.getExpiresAt(),
                 userOptional.get().getUsername(),
                 URL_UPDATED_MESSAGE,
                 HttpStatus.OK);
@@ -213,6 +229,7 @@ public class UrlServiceImpl implements UrlService {
         Url url = urlOptional.get();
         urlRepository.delete(url);
         return UrlResponse.success(
+                null,
                 null,
                 null,
                 null,

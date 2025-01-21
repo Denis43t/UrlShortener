@@ -144,7 +144,8 @@ public class StatisticsService {
                             url.getLongUrl(),
                             url.getVisits(),
                             isActive,
-                            url.getCreatedAt()));
+                            url.getCreatedAt(),
+                            expiresAt));
         }
         return list;
     }
@@ -167,7 +168,8 @@ public class StatisticsService {
                                 url.getLongUrl(),
                                 url.getVisits(),
                                 true,
-                                url.getCreatedAt()));
+                                url.getCreatedAt(),
+                                expiresAt));
             }
         }
         return list;

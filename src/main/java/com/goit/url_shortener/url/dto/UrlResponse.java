@@ -33,6 +33,12 @@ public class UrlResponse {
     private LocalDateTime createdAt;
 
     /**
+     * The expiration date and time for the URL.
+     * If specified, the URL will no longer be valid after this timestamp.
+     */
+    private LocalDateTime expiresAt;
+
+    /**
      * The username of the person who created the shortened URL.
      */
     private String author;
@@ -61,12 +67,14 @@ public class UrlResponse {
     public UrlResponse(String shortUrl,
                        String longUrl,
                        LocalDateTime createdAt,
+                       LocalDateTime expiresAt,
                        String author,
                        String message,
                        HttpStatus status) {
         this.shortUrl = shortUrl;
         this.longUrl = longUrl;
         this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
         this.author = author;
         this.message = message;
         this.status = status;
@@ -96,10 +104,11 @@ public class UrlResponse {
     public static UrlResponse success(String shortUrl,
                                       String longUrl,
                                       LocalDateTime createdAt,
+                                      LocalDateTime expiresAt,
                                       String author,
                                       String message,
                                       HttpStatus status) {
-        return new UrlResponse(shortUrl, longUrl, createdAt, author, message, status);
+        return new UrlResponse(shortUrl, longUrl, createdAt, expiresAt, author, message, status);
     }
 
     /**
