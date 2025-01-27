@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9999:9999"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shortener_db
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET_KEY}
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  db:
+    image: postgres:15
+    container_name: postgres_container
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: shortener_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - app_network
+
+networks:
+  app_network:
+
+volumes:
+  db_data:

@@ -1,0 +1,922 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Team Project - URL Shortener - OpenAPI 3.0",
+    "description": "The \"UrlShortener\" project is a web service that allows you to convert original URLs into shorter, unique ones. The user enters a original URL and the service generates a shortened URL that redirects to the original address when accessed. Statistics on the use of short links are also available.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1",
+      "description": "Development server"
+    },
+    {
+      "url": "http://localhost:9999/api/v2",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Operations with authentication and authorization"
+    },
+    {
+      "name": "url",
+      "description": "Store and operation with url"
+    },
+    {
+      "name": "statistics",
+      "description": "All information about URL (amount, visits, isActive)"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Registration a new user",
+        "description": "Add new user to storage",
+        "requestBody": {
+          "description": "User object that needs to be added to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully registered."
+                    },
+                    "userId": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "goit18"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "Invalid username format": {
+                    "value": {
+                      "message": "User is not registered. Username must be at least 5 and no more than 50 characters."
+                    }
+                  },
+                  "Invalid password format": {
+                    "value": {
+                      "message": "User is not registered. Password must be at least 8 characters long, including digits, uppercase, and lowercase letters."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User with introduced username is already exists in storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "User is not registered. User with name goit18 already exists. Please try a different name."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Authorization and authentication user",
+        "description": "Login user in api application and receiving token",
+        "requestBody": {
+          "description": "User object that needs to authorization and authentication in application",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully authenticated."
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "Invalid username format": {
+                    "value": {
+                      "message": "User is not authenticated. Username must be at least 5 and no more than 50 characters."
+                    }
+                  },
+                  "Invalid password format": {
+                    "value": {
+                      "message": "User is not authenticated. Password must be at least 8 characters long, including digits, uppercase, and lowercase letters."
+                    }
+                  },
+                  "User is not found": {
+                    "value": {
+                      "message": "User is not authenticated. User with name goit19 not found."
+                    }
+                  },
+                  "Wrong password": {
+                    "value": {
+                      "message": "User is not authenticated. Wrong password. Please try again."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/longFromShort": {
+      "get": {
+        "tags": [
+          "url"
+        ],
+        "summary": "Getting original URL adress from storage by shortened URL adress",
+        "description": "",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UrlRequestBodyWithShortenedUrl"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/UrlSuccessfulResponse"
+          },
+          "400": {
+            "description": "Shortened URL is null or empty",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "Url is incorrect."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Shortened URL isn't consists in storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "URL could not be found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Shortened URL is expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "URL has expired."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/shortFromLong": {
+      "post": {
+        "tags": [
+          "url"
+        ],
+        "summary": "Making shortened URL adress from original URL adress",
+        "description": "Save in storage original URL adress and generate short url",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UrlRequestBodyWithOriginalUrl"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/UrlSuccessfulResponse"
+          },
+          "400": {
+            "description": "Unsuccessful operation if shortened URL adress is null or empty and if URL is expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlSuccessfulResponse"
+                },
+                "examples": {
+                  "If shortened URL adress is null or empty": {
+                    "value": {
+                      "message": "Url is incorrect."
+                    }
+                  },
+                  "If URL is expired": {
+                    "value": {
+                      "message": "You cannot set the expiration date to a past date. Please choose a valid future date."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unsuccessful operation if header don't consist Authorization header with token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "User is not authenticated. Please login to receive the urls."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Shortened URL is expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "You cannot set the expiration date to a past date. Please choose a valid future date."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/update": {
+      "patch": {
+        "tags": [
+          "url"
+        ],
+        "summary": "Updating information in storage of shortened URL",
+        "description": "Generate new shortened URL adress",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "token to authorizating and authenticating in apllication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UrlRequestBodyWithShortenedUrl"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/responses/UrlSuccessfulResponse/content/application~1json/schema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Url has been updated successfully."
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unsuccessful operation if header don't consist Authorization header with token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "User is not authenticated. Please login to receive the urls."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unsuccessful operation if shortened URL adress isn't consists in storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "URL could not be found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/delete": {
+      "delete": {
+        "tags": [
+          "url"
+        ],
+        "summary": "Deleting information about URL from storage",
+        "description": "Operation delete any information about URL by shortened URL",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "token to authorizating and authenticating in apllication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UrlRequestBodyWithShortenedUrl"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "Url has been deleted successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unsuccessful operation if header don't consist Authorization header with token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "User is not authenticated. Please login to receive the urls."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unsuccessful operation if shortened URL adress isn't consists in storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "URL could not be found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/stats/all": {
+      "get": {
+        "tags": [
+          "statistics"
+        ],
+        "summary": "Getting list of URLs for the current user",
+        "description": "Retrieve all URLs associated with the authenticated user",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "token to authorizating and authenticating in apllication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/StatsSuccessfulResponse"
+          },
+          "401": {
+            "description": "Unsuccessful operation if header don't consist Authorization header with token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "User is not authenticated. Please login to receive the urls."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unsuccessful operation if user has no data in the store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "URL list is empty."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/stats/active": {
+      "get": {
+        "tags": [
+          "statistics"
+        ],
+        "summary": "Getting list of active URLs for the current user",
+        "description": "Retrieve all active URLs associated with the authenticated user",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "token to authorizating and authenticating in apllication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/StatsSuccessfulResponse"
+          },
+          "401": {
+            "description": "Unsuccessful operation if header don't consist Authorization header with token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "User is not authenticated. Please login to receive the urls."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unsuccessful operation if user has no data in the storege",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "URL list is empty."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/stats/visits": {
+      "get": {
+        "tags": [
+          "statistics"
+        ],
+        "summary": "Getting statistics for shortened URL",
+        "description": "Fetch the number of visits for a given short URL",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "token to authorizating and authenticating in apllication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJnb2l0IiwiaWF0IjoxNzM2Njc5MDcwLCJleHAiOjE3MzY2Nzk5NzB9.OfvcYlOC4Awj2v9FnQHrrFopO1JeB1iv-1LY_CnUko550L-pU-Hp7G9AWObyIqVj"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/UrlRequestBodyWithShortenedUrl"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "visits": {
+                      "type": "integer",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unsuccessful operation if header don't consist Authorization header with token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "User is not authenticated. Please login to receive the urls."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unsuccessful operation if shortened URL adress isn't consists in storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/UrlUnSuccessfulResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "URL could not be found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "description": "Validates that the username length is between 5 and 50.",
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 50,
+            "nullable": false,
+            "example": "goit18"
+          },
+          "password": {
+            "description": "Validates that the password has a minimum length of 8 and contains at least one lowercase letter, one uppercase letter, and one digit.",
+            "type": "string",
+            "nullable": false,
+            "minLength": 8,
+            "example": "Thread18"
+          }
+        }
+      },
+      "URL": {
+        "properties": {
+          "long_url": {
+            "type": "string",
+            "example": "https://www.englishdom.com/",
+            "nullable": false,
+            "maxLength": 2000
+          },
+          "short_url": {
+            "type": "string",
+            "example": "https://qjGXyh",
+            "nullable": false,
+            "maxLength": 50
+          },
+          "visits": {
+            "type": "integer",
+            "example": 10,
+            "nullable": false
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-01-20 11:39",
+            "nullable": false
+          },
+          "expiresAt": {
+            "type": "string",
+            "example": "2025-01-21 11:39"
+          },
+          "user_id": {
+            "type": "integer",
+            "nullable": false,
+            "example": 1
+          }
+        }
+      },
+      "StatsURL": {
+        "properties": {
+          "shortUrl": {
+            "type": "string",
+            "example": "https://qjGXyh"
+          },
+          "long_url": {
+            "type": "string",
+            "example": "https://www.englishdom.com/",
+            "nullable": false,
+            "maxLength": 2000
+          },
+          "visits": {
+            "type": "integer",
+            "example": 10,
+            "nullable": false
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-01-20 11:39",
+            "nullable": false
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "UrlRequestBodyWithOriginalUrl": {
+        "description": "Body with original URL adress.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "url"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "example": "https://www.englishdom.com/"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "example": "2025-01-30T18:39:26.216Z"
+                },
+                "authorizationHeader": {
+                  "type": "string",
+                  "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnb2l0MTgiLCJpYXQiOjE3MzczOTExNDksImV4cCI6MTczNzQ3NzU0OX0.oy1ViEiRxe3wQJfUZpia3FMmlXPdUVIKp2WM7qQ54-k"
+                }
+              }
+            }
+          }
+        },
+        "required": true
+      },
+      "UrlRequestBodyWithShortenedUrl": {
+        "description": "Body with shortened URL adress.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "url"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "example": "https://wPVUr9"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "example": "2025-01-30T18:39:26.216Z"
+                },
+                "authorizationHeader": {
+                  "type": "string",
+                  "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnb2l0MTgiLCJpYXQiOjE3MzczOTExNDksImV4cCI6MTczNzQ3NzU0OX0.oy1ViEiRxe3wQJfUZpia3FMmlXPdUVIKp2WM7qQ54-k"
+                }
+              }
+            }
+          }
+        },
+        "required": true
+      }
+    },
+    "responses": {
+      "UrlSuccessfulResponse": {
+        "description": "Successful operation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "shortUrl": {
+                  "type": "string",
+                  "example": "https://wPVUr9"
+                },
+                "longUrl": {
+                  "type": "string",
+                  "example": "https://www.englishdom.com/"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2025-01-30T18:39:26.216Z"
+                },
+                "author": {
+                  "type": "string",
+                  "example": "goit18"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Url has been created successfully."
+                }
+              }
+            }
+          }
+        }
+      },
+      "UrlUnSuccessfulResponse": {
+        "description": "Unsuccessful operation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User is not registered. Username must be at least 5 and no more than 50 characters."
+                }
+              }
+            }
+          }
+        }
+      },
+      "StatsSuccessfulResponse": {
+        "description": "Successful operation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "visits": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "urls": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StatsURL"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization_Header": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Authorization_Header": [
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnb2l0MTgiLCJpYXQiOjE3MzczODkxNjYsImV4cCI6MTczNzQ3NTU2Nn0.sqSJe8fxr7X46c_wLCWOrOEb7P0BLM_HNRjs1eYpMXc"
+      ]
+    }
+  ]
+}

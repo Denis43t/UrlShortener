@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Team Project - URL Shortener - OpenAPI 3.0
+  description: >-
+      The "UrlShortener" project is a web service that allows you to convert original URLs into shorter, unique ones.
+      The user enters a original URL and the service generates a shortened URL that redirects to the original address when accessed. Statistics on the use of short links are also available.
+  version: 2.0.0
+servers:
+  - url: http://localhost:8080/api/v2
+    description: Development server
+  - url: http://localhost:9999/api/v2
+    description: Production server
+tags:
+  - name: All endpoints
+    description: ''
+paths:
+  /:
+    get:
+      tags:
+        - All endpoints
+      summary: ''
+      description: ''
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Version 2 is under development
+    post:
+      tags:
+        - All endpoints
+      summary: ''
+      description: ''
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Version 2 is under development
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          description: Validates that the username length is between 5 and 50.
+          type: string
+          minLength: 5
+          maxLength: 50
+          nullable: false
+          example: goit18
+        password:
+          description: >-
+            Validates that the password has a minimum length of 8 and contains
+            at least one lowercase letter, one uppercase letter, and one digit.
+          type: string
+          nullable: false
+          minLength: 8
+          example: Thread18
+    URL:
+      properties:
+        long_url:
+          type: string
+          example: https://www.englishdom.com/
+          nullable: false
+          maxLength: 2000
+        short_url:
+          type: string
+          example: https://qjGXyh
+          nullable: false
+          maxLength: 50
+        visits:
+          type: integer
+          example: 10
+          nullable: false
+        createdAt:
+          type: string
+          example: 2025-01-20 11:39
+          nullable: false
+        expiresAt:
+          type: string
+          example: 2025-01-21 11:39
+        user_id:
+          type: integer
+          nullable: false
+          example: 1
+    StatsURL:
+      properties:
+        shortUrl:
+          type: string
+          example: https://qjGXyh
+        long_url:
+          type: string
+          example: https://www.englishdom.com/
+          nullable: false
+          maxLength: 2000
+        visits:
+          type: integer
+          example: 10
+          nullable: false
+        createdAt:
+          type: string
+          example: 2025-01-20 11:39
+          nullable: false
+        active:
+          type: boolean
+          example: true
+  requestBodies:
+    UrlRequestBodyWithOriginalUrl:
+      description: Body with original URL adress.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - url
+            properties:
+              url:
+                type: string
+                example: https://www.englishdom.com/
+              expiresAt:
+                type: string
+                example: '2025-01-30T18:39:26.216Z'
+              authorizationHeader:
+                type: string
+                example: >-
+                  Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnb2l0MTgiLCJpYXQiOjE3MzczOTExNDksImV4cCI6MTczNzQ3NzU0OX0.oy1ViEiRxe3wQJfUZpia3FMmlXPdUVIKp2WM7qQ54-k
+      required: true
+    UrlRequestBodyWithShortenedUrl:
+      description: Body with shortened URL adress.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - url
+            properties:
+              url:
+                type: string
+                example: https://wPVUr9
+              expiresAt:
+                type: string
+                example: '2025-01-30T18:39:26.216Z'
+              authorizationHeader:
+                type: string
+                example: >-
+                  Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnb2l0MTgiLCJpYXQiOjE3MzczOTExNDksImV4cCI6MTczNzQ3NzU0OX0.oy1ViEiRxe3wQJfUZpia3FMmlXPdUVIKp2WM7qQ54-k
+      required: true
+  responses:
+    UrlSuccessfulResponse:
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              shortUrl:
+                type: string
+                example: https://wPVUr9
+              longUrl:
+                type: string
+                example: https://www.englishdom.com/
+              createdAt:
+                type: string
+                example: '2025-01-30T18:39:26.216Z'
+              author:
+                type: string
+                example: goit18
+              message:
+                type: string
+                example: Url has been created successfully.
+    UrlUnSuccessfulResponse:
+      description: Unsuccessful operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: >-
+                  User is not registered. Username must be at least 5 and no
+                  more than 50 characters.
+    StatsSuccessfulResponse:
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              visits:
+                type: integer
+                example: 1
+              urls:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StatsURL'
+  securitySchemes:
+    Authorization_Header:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - Authorization_Header:
+      - >-
+        Bearer
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnb2l0MTgiLCJpYXQiOjE3MzczODkxNjYsImV4cCI6MTczNzQ3NTU2Nn0.sqSJe8fxr7X46c_wLCWOrOEb7P0BLM_HNRjs1eYpMXc
