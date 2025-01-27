@@ -1,14 +1,30 @@
 package com.goit.url_shortener.error;
 
+import java.time.LocalDateTime;
 
-import lombok.Builder;
-import org.springframework.http.HttpStatus;
-
-/**
- * Represents a standard error response containing a message and HTTP status.
- */
-@Builder
 public class ErrorResponse {
+
+    private int status;
+
     private String message;
-    private HttpStatus status;
+
+    private LocalDateTime timestamp;
+
+    public ErrorResponse(String message, LocalDateTime timestamp, int status) {
+        this.message = message;
+        this.timestamp = timestamp;
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 }
