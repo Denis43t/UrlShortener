@@ -1,4 +1,4 @@
-package com.example.demo.error.exception;
+package com.goit.url_shortener.error;
 
 public class UrlNotFoundException extends RuntimeException {
 

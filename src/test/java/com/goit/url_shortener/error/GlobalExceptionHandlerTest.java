@@ -1,6 +1,5 @@
-package com.example.demo.error;
+package com.goit.url_shortener.error;
 
-import com.example.demo.error.exception.UrlNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
